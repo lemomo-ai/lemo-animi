@@ -1,13 +1,13 @@
 ---
 name: lemo-animi
-description: Make a stop-motion animated short with lemo-animi in a fixed material style. Prepare and verify the environment first, then ask for all missing choices together, starting with the full style menu. From the first reply, defer all creative decisions, titles and project folders until every choice is answered or explicitly delegated. Use when the user says "用 lemo-animi 做…" or "make … with lemo-animi", or asks for a stop-motion, claymation or cartoon short (定格动画、黏土动画、动画短片、做个会动的小片子), including a story or character to animate. For photorealism see references/realism.md. Excludes animating a single existing image and editing existing video.
+description: Make a stop-motion animated short with lemo-animi in a fixed material style. Prepare and verify the environment first, then ask for all missing choices together, starting with the full style menu. Your first reply names no story, theme, title or project folder; defer every creative decision until each choice is answered or explicitly delegated. Use when the user says "用 lemo-animi 做…" or "make … with lemo-animi", or asks for a stop-motion, claymation or cartoon short (定格动画、黏土动画、动画短片、做个会动的小片子), including a story or character to animate. For photorealism see references/realism.md. Excludes animating a single existing image and editing existing video.
 ---
 
 # lemo-animi: a stop-motion short from one line
 
 **Image generation makes it look right; code makes it move.** Every style has fixed prompt templates; you only fill the slots (character, action, scene). Assets are transparent PNGs, sliced and composited shot by shot in Python (on twos, anchors, camera, transitions, grading, subtitles). Sound comes from one sound sheet: score, foley, optional narration, mix.
 
-**Read files whole.** A tool output may be cut short: read files over ~120 lines in chunks (`sed -n '1,120p' <file>`, then the rest); never act on a truncated read.
+**Read files whole.** A tool output may be cut short: read instruction files over ~120 lines in chunks (`sed -n '1,120p' <file>`, then the rest); never act on a truncated read. Raw logs, long cue lists and review notes: pull out the relevant lines locally (`grep`, `tail`) or read them page by page until every entry is covered; never print encoded data.
 
 ## 1. Talking to the user
 
@@ -114,7 +114,7 @@ A prop acting alone (a lamp lights itself, a boat drifts) is prop images + fx sh
 11. **Draw the payoff into the artwork**: character and object generated together, given a close shot; never pasted on in code; the object's path stays continuous across cuts.
 12. **Self-review frame by frame**: `"$PY" "$S/selfcheck.py" out/<name>.mp4 --style <style>` in the film folder, against `quality.md` §2; fix and run again.
 13. **A whole story** (directing §1): the skeleton for the film's length, every part with its seconds in the director's plan and caused by the part before; the want is set up before the first try and answered by the payoff.
-14. **Only text and still images go into your own input; never audio or video.** Never attach, embed, base64-encode or open a sound or video file in a way that adds it to the conversation (an audio helper, `input_audio`, a media viewer, a data URL). Many models have no audio input: the request fails with "Audio input is not available", and because the file stays in the history, every later message in that chat fails too. Check sound with `sound.py check` and `sound.py times`; look at video as extracted frames and `selfcheck.py` sheets; the user listens on the review page.
+14. **Only text and still images go into your own input; never audio or video.** Never attach, embed, base64-encode or open a sound or video file in a way that adds it to the conversation (an audio helper, `input_audio`, a media viewer, a data URL). This covers short clips, single stems and transcoded copies too, in tool results and in child-agent inputs. Many models have no audio input: the request fails with "Audio input is not available", and the item can stay in the history so that later text-only messages fail as well. Never probe whether audio works by sending a sample. Run media tools on the files locally and bring back only numbers, paths or extracted stills: check sound with `sound.py check` and `sound.py times`, look at video as extracted frames and `selfcheck.py` sheets. Playback is the user's: on the review page, or a local path you give them.
 
 ## 5. Delivery
 
@@ -122,6 +122,6 @@ A prop acting alone (a lamp lights itself, a boat drifts) is prop images + fx sh
 - **The last message is the report**, in the user's language, written out in full with all five numbered parts in this order, even where the app favours short replies. A link to `production-log.md` never replaces a part; item 3 lists every must-pass item on its own line.
   1. Title and logline; style; length and size; shots.
   2. Images: total, and backgrounds / action sheets / close-up sheets / props / fx; how many regenerated.
-  3. Must-pass items (`quality.md` §3): one line each, pass / fixed / known issue / not checked.
+  3. Must-pass items (`quality.md` §3): one line each, pass / fixed / known issue / not checked. For sound, two separate lines: what was measured (loudness, true peak, dead air, cue times against contact frames) and "Listening: not listened by the agent".
   4. What you're least happy with, and anything not done (no network, no audio check…).
   5. Where the film and the review page are.

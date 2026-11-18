@@ -2,7 +2,7 @@
 
 ## 1. What good looks like
 
-Play it once and ask:
+Judge the whole film by these (your own review uses the still sheets and contact frames; pacing, pronunciation and mix balance are for the user to judge during playback on the review page):
 1. **Always something happening**: something new every 1–1.5 s; no stretch plays like a slideshow.
 2. **Readable**: the hero is big enough; every key performance has a medium or closer shot; with the sound off you can still tell what each character feels (face or pose), and the narration doesn't tell what the picture already shows.
 3. **Looks like the material**: real clay / paper / felt shot on a table, not 3D render or stickers.
@@ -17,8 +17,8 @@ Play it once and ask:
 3. Stills of key drawings (first drawing of each shot, both sides of every sheet change, contact and occlusion moments).
 4. Full film → `contact.sh` contact sheet (8 frames, overall look).
 5. `motion_check.sh` consecutive frames: the 1–2 most intense seconds, sheet changes, occlusions.
-6. **Frame-by-frame self-review**: `"$PY" "$S/selfcheck.py" out/<name>.mp4 --style <style>` → `work/selfcheck_frames.jpg` (every 0.5 s, too-dark cells marked red) and `work/selfcheck_cuts.jpg` (before/after every cut), plus a report of too-dark time ranges. Look at every image against the list below; log each problem in the production log, fix it, run again.
-7. **Check the sound by measurement, never by loading audio into your input** (SKILL.md hard rule 14): narration text written as it should be read (heteronyms, numbers), subtitles in sync with the voice (`audio/subs.json`), foley on the right drawing (`sound.py times` beside the contact frames), music not drowning the narration (`sound.py check`). Stems in `audio/stem_*.wav` are for the user to listen to on the review page; mark listening "not listened" in the review.
+6. **Frame-by-frame self-review**: `"$PY" "$S/selfcheck.py" out/<name>.mp4 --style <style>` → `work/selfcheck_frames.jpg` (every 0.5 s, too-dark cells marked red) and `work/selfcheck_cuts.jpg` (before/after every cut), plus a report of too-dark time ranges. Look at every image against the list below, a long sheet one time-labelled page at a time; when a contact, subtitle or foot is too small to judge, look at a crop of the full-size still. Log each problem in the production log, fix it, run again.
+7. **Check the sound by measurement, never by loading audio into your input** (SKILL.md hard rule 14): narration text written as it should be read (heteronyms, numbers), subtitles in sync with the voice (`audio/subs.json`), foley on the right drawing (`sound.py times` beside the contact frames), loudness, true peak and dead air (`sound.py check`). If `sound.py check` reports the measurement unavailable, the sound check stays open. Measurements don't show pronunciation, intelligibility, audible sync or balance: report those as "not listened" until the user comments. For a solo check, give the user the path of the stem in `audio/stem_*.wav`.
 
 ### What a reviewer will catch
 
@@ -67,7 +67,7 @@ Play it once and ask:
 | 4 | All effects are generated images; no code-drawn shapes, rectangles or geometric lines | consecutive frames |
 | 5 | No glitches: things appearing or vanishing, duplicates, size pops or jumps at sheet changes, the character changing look, per-drawing jitter, swaying while standing, interpenetration, foot sliding, feet not on what they stand on, attached parts off their mount, floating hung props, effects over the face, whole-frame brightness flicker, pasted-on light | consecutive frames, stills around sheet changes, full-size stills at every contact |
 | 6 | Sound: score and foley present (narration too if requested), no FAIL from `sound.py lint`, the film has an audio track; every landing and impact has its sound on its drawing | `ffprobe out/<name>.mp4` shows audio; `sound.py times` beside the contact drawings |
-| 7 | Subtitles (if narrated): every line subtitled, in sync, inside the frame, not over the hero's face; bilingual: one row per language, no wrapping, one shared plate | stills, full film, `sound.py lint` |
+| 7 | Subtitles (if narrated): every line subtitled, in sync, inside the frame, not over the hero's face; bilingual: one row per language, no wrapping, one shared plate | subtitle timestamps (`audio/subs.json`), stills at line starts and ends, `sound.py lint` |
 | 8 | Length: film length = sound sheet `dur`, picture and sound equal | `film.py lint` |
 | 9 | No AI-drawn text, logos, or characters resembling existing works | contact sheet |
 | 10 | Reviewed and fixed: every version has a timecoded review record; problems found were fixed and re-reviewed; anything not watched or heard is "not checked" | production log |

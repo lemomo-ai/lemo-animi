@@ -112,7 +112,7 @@ Footsteps, joint clicks and wing beats follow which cell is shown; computing sec
 
 ## Mix (automatic)
 
-With narration: narration at a uniform level, score about 6 dB below it and ducked another 7 dB while narration plays; foley by `v`; overall loudness −14 LUFS. Stems in `audio/stem_music.wav`, `stem_foley.wav` (plus `stem_vo.wav` with narration) for solo listening during review.
+With narration: narration at a uniform level, score about 6 dB below it and ducked another 7 dB while narration plays; foley by `v`; overall loudness −14 LUFS. Stems in `audio/stem_music.wav`, `stem_foley.wav` (plus `stem_vo.wav` with narration) The user hears the finished mix on the review page; for a solo check, give the user the stem's path. You never load audio into your own input (SKILL.md hard rule 14).
 
 After muxing, `sound.py check` runs on the film by itself (or run `sound.py check out/<name>.mp4`): it prints loudness and true peak and warns when loudness is outside −16…−12.5 LUFS, the true peak is above −1 dBTP, or there is dead air (below −45 dB) longer than 2 s away from the ends. Score `silences` follow the rule above; a longer score stop must have foley or narration inside it. Treat every warning as a review item: fix it or say why it stays.
 
