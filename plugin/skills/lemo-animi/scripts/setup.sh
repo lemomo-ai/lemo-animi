@@ -4,8 +4,8 @@
 # Usage:
 #   sh setup.sh          # check ffmpeg and Python -> reuse what is already installed (a system Python that has every
 #                        # dependency, an earlier venv, samples already downloaded), make the venv and install deps only if needed -> download instrument samples -> print the Python to use (no cut-out model)
-#   sh setup.sh start    # first step of every film: check; if anything is missing, start the full install (as plain sh setup.sh)
-#                        # in the background and return at once (log: $LEMO_ANIMI_HOME/setup.log). Run plain sh setup.sh later:
+#   sh setup.sh start    # check; if anything is missing, start the full install (as plain sh setup.sh)
+#                        # in the background and return at once (log: $LEMO_ANIMI_HOME/setup.log). Run plain sh setup.sh to wait:
 #                        # it waits for the background install, then finishes or reports what failed
 #   sh setup.sh check    # check only, install / download nothing (exit 1 if something is missing; a missing cut-out model does not count)
 #   sh setup.sh python   # only print the Python to use (exit 1 if the env is not ready); this is $PY in commands
@@ -197,7 +197,7 @@ os.execvp("sh", ["sh", sys.argv[1], "env"])' "$HERE/setup.sh" "$LOG"
   fi
   say ""
   say "INSTALLING IN THE BACKGROUND: Python env (~300 MB) + score instrument samples (~1.4 GB) -> $HOME_DIR (log: $LOG)."
-  say "Ask the opening questions meanwhile. After the answers run sh setup.sh: it waits for this install, then finishes or shows what failed."
+  say "Run sh setup.sh to wait for installation, then sh setup.sh check. Ask the opening questions only after the environment is ready."
   exit 0
 fi
 if [ "$MODE" != "check" ]; then

@@ -10,8 +10,10 @@ Writes (all under docs/):
     media/<id>.mp4         ~6 s muted seamless loop from the middle of the latest sample film, 640 px, <= 900 KB
     media/manifest.json    what each media file was cut from (so re-runs skip unchanged ones)
     content.json           styles.<id>.film.seconds refreshed from the released files (ffprobe, whole seconds), when --films is given
+    media/process/p1-4.webp  the four "how it works" panes, the same drawing as readme/process.webp (needs --src and --films)
+    readme/cast.webp, readme/process.webp, readme/cards/<id>-<lang>.webp   pictures for the READMEs
     index.html, zh/index.html                     the gallery (English, Chinese)
-    ../README.md, ../README.zh-CN.md              only the style table between the styles:start / styles:end markers
+    ../README.md, ../README.zh-CN.md              only the style cards between the styles:start / styles:end markers
 
 Content and presentation are kept apart: all page text and the sample-film details live in docs/content.json;
 style names, one-liners and good/bad-for lists come from style.json. page() below only lays them out; the look is
@@ -32,14 +34,13 @@ STYLES = SKILL_DIR / 'styles'
 MEDIA = DOCS / 'media'
 FILMS_DIR = None
 
-# First release, in this order. Candidates show in the gallery's "in progress" section only.
+# The released styles, in this order. Only these appear on the site and in the READMEs.
 PUBLISHED = ['clay', 'papercraft', 'tin', 'felt', 'cardboard', 'wood', 'crochet', 'fabric']
-CANDIDATES = ['shadow', 'cutout', 'plasticine-flat', 'miniature']
 
 REPO_URL = 'https://github.com/lemomo-ai/lemo-animi'
 
 # Styles without poster.jpg take a frame of the sample film at this time (s). Loops start mid-film unless set here.
-POSTER_AT = {'tin': 24.0, 'miniature': 36.0, 'shadow': 10.0}
+POSTER_AT = {'tin': 24.0}
 LOOP_AT = {'papercraft': 34.5, 'wood': 10.0}
 LOOP_LEN, XFADE = 6.0, 0.5
 LOOP_MAX, POSTER_MAX = 880_000, 150_000
@@ -48,7 +49,7 @@ ENC = 'h264-q2'  # bump when the loop encoding changes, so re-runs re-encode
 CROP = 'crop=trunc(iw*0.8/2)*2:trunc(ih*0.8/2)*2:trunc(iw*0.1/2)*2:trunc(ih*0.02/2)*2'
 
 # The cast: each style's lead from its sample film's character sheet (front, 3/4, side, back on a transparent
-# background), and the clay film's toss sheet for "how it works". Paths are inside the sample film projects (--src).
+# background), and the clay film's sheets, background and a frame for "how it works". Paths are inside the sample film projects (--src).
 CAST = {'clay': 'clay/src/char_bobo.png', 'papercraft': 'papercraft/src/char_fox.png', 'tin': 'tin/src/char_dudu.png',
         'felt': 'felt/src/char_tt.png', 'cardboard': 'cardboard/src/char_fang.png', 'wood': 'wood/src/char_lizi.png',
         'crochet': 'crochet/src/char_pupu.png', 'fabric': 'fabric/src/char_dou.png'}
@@ -61,10 +62,30 @@ CONTENT = json.loads((DOCS / 'content.json').read_text(encoding='utf-8'))
 e = html.escape
 
 
+CJK = r'[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]'
+
+
+def tx(text, heading=False):
+    """Escape page text and set its line breaks (paired with .nb { white-space: nowrap } in site.css):
+    {a phrase} in content.json never breaks inside. In running text the last two words (English, when short) or the
+    last four characters (Chinese) stay together, so no line ends a paragraph with one word or one character alone.
+    Hyphenated words ("Wind-up", "hard-edged"; any length in a heading) never break at the hyphen."""
+    out = re.sub(r'(?<![\w{-])([\w.]+(?:-[\w.]+)+)', lambda m: '{' + m.group(1) + '}' if heading or len(m.group(1)) <= 16 else m.group(1), e(text))
+    out = re.sub(r'(\d[\d.]*–\d[\d.]*)', r'{\1}', out)                                         # 3.11–3.13
+    out = re.sub(r'(\d) (?=(?:GB|MB|KB|s|min|px)\b)', r'\1&nbsp;', out)                         # 1.7 GB
+    if heading:
+        pass
+    elif re.search(CJK, out):
+        out = re.sub(r'((?:%s|[\w.]){4}[\s\u3000-\u303f\uff00-\uffef]*)$' % CJK, r'{\1}', out)   # last four characters
+    else:
+        out = re.sub(r'(^|\s)(\S{1,8}) (\S{1,7})$', r'\1\2&nbsp;\3', out)                          # last two short words
+    out = re.sub(r'\{([^{}]*)\{([^{}]*)\}([^{}]*)\}', r'{\1\2\3}', out)                       # nested glue: keep the outer
+    return re.sub(r'\{([^{}]+)\}', r'<span class="nb">\1</span>', out)
+
+
 def hd(text):
-    """Escape a heading or label and keep its hyphenated words whole ("Wind-up", "Stop-motion"): a line never breaks
-    at the hyphen. Paired with .nb { white-space: nowrap } in site.css."""
-    return re.sub(r'\S+-\S+', lambda m: f'<span class="nb">{m.group(0)}</span>', e(text))
+    """A heading or label: tx() with hyphenated words kept whole."""
+    return tx(text, heading=True)
 
 
 def film_seconds(films):
@@ -90,11 +111,9 @@ def film_seconds(films):
 
 def load_styles():
     out = {}
-    for sid in PUBLISHED + CANDIDATES:
-        f = STYLES / sid / 'style.json'
-        # a release ships only the published styles; candidates fall back to their names in content.json
-        d = json.loads(f.read_text(encoding='utf-8')) if f.exists() else CONTENT['candidates'].get(sid)
-        if d: out[sid] = {k: d.get(k) for k in ('id', 'num', 'name', 'en', 'line', 'line_en')}
+    for sid in PUBLISHED:
+        d = json.loads((STYLES / sid / 'style.json').read_text(encoding='utf-8'))
+        out[sid] = {k: d.get(k) for k in ('id', 'num', 'name', 'en', 'line', 'line_en')}
     return out
 
 
@@ -178,10 +197,7 @@ def build_media(styles, films, force):
         entry['poster'] = key if webp.exists() else None
         # loop
         mp4 = MEDIA / f'{sid}.mp4'
-        if sid not in PUBLISHED:                     # styles in progress show a still only
-            mp4.unlink(missing_ok=True)
-            entry['loop'] = None
-        elif film:
+        if film:
             d = duration(film)
             start = LOOP_AT.get(sid, d / 2 - (LOOP_LEN + XFADE) / 2)
             start = round(max(4.0, min(start, d - 4.0 - LOOP_LEN - XFADE)), 2)
@@ -238,13 +254,12 @@ def stamp(p):
 
 
 def build_cast(src, force):
-    """media/cast/<id>.webp sprites, media/process/*, readme/cast.webp. Returns {id: cell width} for the page."""
+    """media/cast/<id>.webp sprites, readme/cast.webp, the process panes. Returns {id: cell width} for the page."""
     mf_path = MEDIA / 'cast.json'
     old = json.loads(mf_path.read_text()) if mf_path.exists() else {}
     if not src:
         return old
     (MEDIA / 'cast').mkdir(parents=True, exist_ok=True)
-    (MEDIA / 'process').mkdir(parents=True, exist_ok=True)
     man, sprites = {}, {}
     for sid, rel in CAST.items():
         p = src / rel
@@ -262,34 +277,9 @@ def build_cast(src, force):
             man[sid] = dict(key=key, cw=cw, w=sp.width)
         else:
             man[sid] = old[sid]
-    # process: the toss sheet as an 8-cell strip, the background, a frame of the film
-    pr = old.get('process', {})
-    act = src / PROCESS['action']
-    if act.exists() and (force or pr.get('action') != stamp(act)):
-        im = Image.open(act).convert('RGBA')
-        cw, chh = im.width // 4, im.height // 2
-        cells = [im.crop((c * cw, r * chh, (c + 1) * cw, (r + 1) * chh)) for r in range(2) for c in range(4)]
-        k = 300 / chh
-        strip = Image.new('RGBA', (round(cw * k) * 8, 300), (0, 0, 0, 0))
-        for i, c in enumerate(cells):
-            strip.paste(c.resize((round(cw * k), 300), Image.LANCZOS), (i * round(cw * k), 0))
-        strip.save(MEDIA / 'process' / 'toss.webp', 'WEBP', quality=84, method=6)
-        sheet = im.copy(); sheet.thumbnail((960, 960), Image.LANCZOS)
-        sheet.save(MEDIA / 'process' / 'toss-sheet.webp', 'WEBP', quality=84, method=6)
-        pr['action'], pr['cell'] = stamp(act), [round(cw * k), 300]
-        print('  process/toss.webp, toss-sheet.webp')
-    bg = src / PROCESS['bg']
-    if bg.exists() and (force or pr.get('bg') != stamp(bg)):
-        save_webp(Image.open(bg), MEDIA / 'process' / 'bg.webp', 120_000)
-        pr['bg'] = stamp(bg); print('  process/bg.webp')
-    film = latest_film(FILMS_DIR, PROCESS['film']) if FILMS_DIR else None
-    if film and (force or pr.get('frame') != f"{film.name}@{PROCESS['at']}"):
-        save_webp(film_frame(film, PROCESS['at']), MEDIA / 'process' / 'frame.webp', 120_000)
-        pr['frame'] = f"{film.name}@{PROCESS['at']}"; print('  process/frame.webp')
-    man['process'] = pr
     if sprites or force or not (README / 'cast.webp').exists():
         readme_cast(src)
-    if force or not (README / 'process.webp').exists():
+    if force or not all((MEDIA / 'process' / f'p{i}.webp').exists() for i in range(1, 5)) or not (README / 'process.webp').exists():
         readme_process(src)
     mf_path.write_text(json.dumps(man, ensure_ascii=False, indent=1) + '\n')
     return man
@@ -365,7 +355,7 @@ def sprite(sid, pre, cast, cls='sprite'):
 
 
 def listing(xs, lang):
-    return ''.join(f'<li>{e(x)}</li>' for x in xs)
+    return ''.join(f'<li>{tx(x)}</li>' for x in xs)
 
 
 def film_block(sid, s, i, lang, pre, man, cast):
@@ -384,7 +374,7 @@ def film_block(sid, s, i, lang, pre, man, cast):
     <div class="meta"><span class="no">{i:02d}</span><span class="kind">{hd(name)}</span><span class="rule"></span></div>
     <div class="who">{f'<span class="mini" data-turn tabindex="-1">{mini}</span>' if mini else ''}<div>
       <h3>{hd(title)}</h3><div class="len num">{f['seconds']:g} {e(t['seconds'])}</div></div></div>
-    <p class="story">{e(f['story'][lang])}</p>
+    <p class="story">{tx(f['story'][lang])}</p>
     <div class="row"><a class="btn primary" href="{CONTENT['films_url'] + f['file']}">{PLAY_ICON}{e(t['films_watch'])}</a>
       <span class="say-id">{e(t['say'])} <code>{sid}</code></span></div>
     <div class="fit"><div><b>{e(t['good'])}</b><ul>{listing(c['good_for'][lang], lang)}</ul></div>
@@ -404,18 +394,10 @@ def page(styles, lang, man, cast):
         f'<span class="label"><b>{hd(style_text(styles[sid], lang)[0].replace(" Stop-motion", "").replace("定格", ""))}</b><span>{sid}</span></span></a>'
         for sid in PUBLISHED)
     films = '\n'.join(film_block(sid, styles[sid], i + 1, lang, pre, man, cast) for i, sid in enumerate(PUBLISHED))
-    pr = cast.get('process') or {}
-    cell = pr.get('cell') or [1, 1]
-    proc_imgs = [
-        f'<div class="pane chk"><div class="views">{"".join(sprite("clay", pre, cast).replace("sprite", f"sprite f{k}" if k else "sprite", 1) for k in range(4))}</div></div>',
-        f'<div class="pane chk"><img src="{pre}media/process/toss-sheet.webp" alt="" loading="lazy"></div>',
-        f'<div class="pane full"><img src="{pre}media/process/bg.webp" alt="" loading="lazy"></div>',
-        f'<div class="pane full live"><img class="bgimg" src="{pre}media/process/bg.webp" alt="" loading="lazy"><span class="shadow"></span>'
-        f'<span class="actor2" style="--cell:{cell[0]}/{cell[1]};background-image:url({pre}media/process/toss.webp)"></span>'
-        f'<span class="rec">{e(t["live"])}</span></div>',
-    ]
-    proc = ''.join(f'<figure>{img}<figcaption><b>{hd(a)}</b>{e(b)}</figcaption></figure>' for img, (a, b) in zip(proc_imgs, t['proc']))
-    steps = ''.join(f'<li><b>{hd(a)}</b><span>{e(b)}</span></li>' for a, b in t['how'])
+    # the same four panes as readme/process.webp (character sheet, action sheet, background, the frame in the film)
+    proc = ''.join(f'<figure><div class="pane"><img src="{pre}media/process/p{i + 1}.webp" alt="" width="744" height="560" loading="lazy"></div>'
+                   f'<figcaption><b>{hd(a)}</b>{tx(b)}</figcaption></figure>' for i, (a, b) in enumerate(t['proc']))
+    steps = ''.join(f'<li><b>{hd(a)}</b><span>{tx(b)}</span></li>' for a, b in t['how'])
     lens_h = ''.join(f'<th>{e(x)}</th>' for x in t['len_h'])
     lens = ''.join(f'<tr{" class=def" if i == 1 else ""}>' + ''.join(f'<td>{e(x)}</td>' for x in row) + '</tr>' for i, row in enumerate(t['lens']))
     cmds = ''
@@ -424,13 +406,10 @@ def page(styles, lang, man, cast):
         codes = ''.join(f'<div class="code"><div class="code-h"><span class="who">{e(w)}</span>'
                         f'<button class="btn sm quiet copy" type="button" data-done="{e(t["copied"])}">{COPY_ICON}<span>{e(t["copy"])}</span></button></div>'
                         f'<pre class="cmd">{e(cmd)}</pre></div>' for w, cmd in block)
-        cmds += f'<li><div class="h">{hd(h)}</div>{codes}{f"<div class=p>{e(p)}</div>" if p else ""}</li>'
-    wip = ''.join(
-        f'<figure><div class="frame sm"><div class="screen"><img src="{pre}media/{sid}.webp" alt="" loading="lazy"><span class="tag">{e(t["wip_badge"])}</span></div></div>'
-        f'<figcaption><b>{hd(style_text(styles[sid], lang)[0])}</b>{e(style_text(styles[sid], lang)[1])}</figcaption></figure>'
-        for sid in CANDIDATES if sid in styles and (MEDIA / f'{sid}.webp').exists())
-    more = ''.join(f'<a href="{u}"><b>{e(n)}</b><span>{e(d)}</span></a>' for n, u, d in t['more'])
-    rpts = ''.join(f'<li><span class="pin"><i>{i + 1}</i></span><div><b>{hd(a)}</b><span>{e(b)}</span></div></li>' for i, (a, b) in enumerate(t['review_pts']))
+        cmds += f'<li><div class="h"><span>{hd(h)}</span></div>{codes}{f"<div class=p>{tx(p)}</div>" if p else ""}</li>'
+    more = ''.join(f'<a href="{u}"><b>{e(n)}</b><span>{tx(d)}</span></a>' for n, u, d in t['more'])
+    rpts = ''.join(f'<li><span class="pin"><i>{i + 1}</i></span><div><b>{hd(a)}</b><span>{tx(b)}</span></div></li>' for i, (a, b) in enumerate(t['review_pts']))
+    lic = ''.join(f'<li><b>{hd(a)}{". " if lang == "en" else "："}</b>{tx(b)}</li>' for a, b in t['licence_pts'])
     rshot = f"{pre}readme/review{'' if lang == 'en' else '-zh'}.webp"
     return f'''<!doctype html>
 <html lang="{'en' if lang == 'en' else 'zh-CN'}">
@@ -461,28 +440,28 @@ def page(styles, lang, man, cast):
 <div class="hero"><div class="wrap">
   <div class="tape flat">{e(t['kicker'])}</div>
   <h1>{hd(t['h1'])}</h1>
-  <p class="lede">{e(t['lede'])}</p>
-  <div class="say"><b>{e(t['you_say'])}</b><q>{hd(t['ask'])}</q></div>
+  <p class="lede">{tx(t['lede'])}</p>
+  <div class="say"><b>{e(t['you_say'])}</b><div class="say-l"><q>{hd(t['ask'])}</q></div></div>
   <div class="cta"><a class="btn lg primary" href="#films">{PLAY_ICON}{e(t['cta_films'])}</a><a class="btn lg" href="#install">{e(t['cta_install'])}</a></div>
 </div>
 <div class="shelf" aria-label="{e(t['cast_h'])}"><div class="cast">
 {actors}
 </div></div>
-<div class="wrap"><p class="cast-p">{e(t['cast_p'])}</p></div>
+<div class="wrap"><p class="cast-p">{tx(t['cast_p'])}</p></div>
 </div>
 
 <section id="films"><div class="wrap">
   <div class="sec-head"><div class="tape">{e(t['styles_h'])}</div><h2>{hd(t['films_h'])}</h2>
-    <p class="lede">{e(t['films_p'])} {e(t['styles_p'])}</p><p class="note">{e(t['loop_note'])}</p></div>
+    <p class="lede">{tx(t['films_p'] + (' ' if lang == 'en' else '') + t['styles_p'])}</p><p class="note">{tx(t['loop_note'])}</p></div>
 {films}
 </div></section>
 
 <section id="how"><div class="wrap">
   <div class="tape">{e(t['how_h'])}</div>
   <h2>{hd(t['proc_h'])}</h2>
-  <p class="lede">{e(t['proc_p'])}</p>
+  <p class="lede">{tx(t['proc_p'])}</p>
   <div class="proc">{proc}</div>
-  <h2 class="sm" style="margin-top:clamp(64px,8vw,104px)">{hd(t['steps_h'])}</h2>
+  <h2 class="sm steps-h">{hd(t['steps_h'])}</h2>
   <ol class="xsheet">{steps}</ol>
   <div class="tablewrap"><table class="lens num"><thead><tr>{lens_h}</tr></thead><tbody>{lens}</tbody></table></div>
 </div></section>
@@ -490,33 +469,28 @@ def page(styles, lang, man, cast):
 <section id="review"><div class="wrap">
   <div class="tape">{e(t['review_eyebrow'])}</div>
   <h2>{hd(t['review_h'])}</h2>
-  <p class="lede">{e(t['review_p'])}</p>
+  <p class="lede">{tx(t['review_p'])}</p>
   <div class="rv">
     <figure class="desk"><img src="{rshot}" alt="{e(t['review_alt'])}" width="1600" height="960" loading="lazy"></figure>
     <div class="rv-side">
       <ol class="rv-pts">{rpts}</ol>
-      <div class="rv-wait"><span class="pill ok live">{e(t['review_pill'])}</span><b>{hd(t['review_wait_h'])}</b><p>{e(t['review_wait'])}</p></div>
+      <div class="rv-wait"><span class="pill ok live">{e(t['review_pill'])}</span><b>{hd(t['review_wait_h'])}</b><p>{tx(t['review_wait'])}</p></div>
     </div>
   </div>
 </div></section>
 
 <section id="install"><div class="wrap inst">
-  <div><div class="tape">{e(t['install_h'])}</div><h2>{hd(t['install_h'])}</h2>
-    <p class="lede">{e(t['install_p'])}</p><p class="need">{e(t['need'])}</p><p class="need model">{e(t['model'])}</p>
-    <p class="need"><a href="{install}">{e(t['install_link'])}</a> · <a href="{skill}">{e(t['skill'])}</a></p></div>
+  <div><div class="tape">{e(t['install_h'])}</div><h2>{hd(t['install_h2'])}</h2>
+    <p class="lede">{tx(t['install_p'])}</p><p class="need">{tx(t['need'])}</p><p class="need model">{tx(t['model'])}</p>
+    <p class="need"><a href="{install}">{e(t['install_link'])}</a>&nbsp;·&nbsp;<a href="{skill}">{e(t['skill'])}</a></p></div>
   <ol class="cmds">{cmds}</ol>
 </div></section>
 
-<section id="in-progress"><div class="wrap">
-  <div class="tape">{e(t['wip_badge'])}</div><h2 class="sm">{hd(t['wip_h'])}</h2>
-  <p class="lede">{e(t['wip_p'])}</p>
-  <div class="wip">{wip}</div>
-</div></section>
-
 <section id="licence"><div class="wrap">
-  <div class="lic"><span class="stamp">CC BY-NC 4.0</span><div>
-    <p>{e(t['licence_p'])} <a href="mailto:{mail}">{mail}</a>.</p>
-    <p><a href="{REPO_URL}/blob/main/LICENSE">LICENSE</a></p></div></div>
+  <div class="lic"><a class="stamp" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a><div>
+    <h2 class="xs">{hd(t['licence_h'])}</h2>
+    <ul>{lic}</ul>
+    <p class="lic-c">{e(t['licence_contact'])} <span class="nb"><a href="mailto:{mail}">{mail}</a> · <a href="{REPO_URL}/blob/main/LICENSE">LICENSE</a></span></p></div></div>
 </div></section>
 </main>
 
@@ -525,77 +499,203 @@ def page(styles, lang, man, cast):
   <div class="more">{more}</div>
   <div class="foot"><span>{e(t['by'])}</span><a href="https://x.com/lemomo_ai">@lemomo_ai</a><a href="mailto:{mail}">{mail}</a>
     <span class="sp"></span><a href="{readme}">{e(t['readme'])}</a><a href="{skill}">{e(t['skill'])}</a><a href="{other}">{e(t['switch'])}</a></div>
-  <p class="foot made">{e(t['foot'])}</p>
+  <p class="foot made">{tx(t['foot'])}</p>
 </div></footer>
 <script src="{pre}assets/site.js"></script>
 </body>
 </html>
 '''
 
-# --------------------------------------------------------------------------------------------- README table
+# --------------------------------------------------------------------------------------------- README styles
+# GitHub strips CSS, so the README's style section is pictures plus plain inline HTML, laid out like the opuscar
+# README: two rows of four cards (the label is drawn into each card, one card per language), each row followed by one
+# small line with the four ids and full-film links.
 
-README_GRID = {'en': ('README.md', 's', '▶ Watch'), 'zh': ('README.zh-CN.md', '秒', '▶ 看片')}
+SITE_URL = 'https://lemomo-ai.github.io/lemo-animi/'
+CARD_W = 520
+README_TEXT = {
+    'en': dict(file='README.md', site=SITE_URL, films='▶ Full films: ',
+               alt='{n} · {name}: {line}. Sample film: {title}, {len}. Opens it in the gallery.'),
+    'zh': dict(file='README.zh-CN.md', site=SITE_URL + 'zh/', films='▶ 完整样片：',
+               alt='{n} · {name}：{line}。样片《{title}》，{len}。在画廊里打开。'),
+}
+
+
+def mmss(sec):
+    return f'{int(sec) // 60}:{int(sec) % 60:02d}'
+
+
+def short_name(s, lang):
+    name = style_text(s, lang)[0]
+    return name.replace(' Stop-motion', '').replace('定格', '')
+
+
+def mix(c1, c2, k):
+    return tuple(round(a * k + b * (1 - k)) for a, b in zip(c1, c2))
+
+
+def hexrgb(h):
+    h = h.lstrip('#'); return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def readme_card(sid, s, lang, i):
+    """One style card, on a transparent margin with a soft shadow so it sits on GitHub's light and dark pages alike:
+    a paper card holding a film frame (the gallery's sprocket holes) with the poster and its length, then the reel
+    number, the style and the film's title."""
+    from PIL import ImageDraw, ImageFilter, ImageFont
+    font = SKILL_DIR / 'fonts' / 'SourceHanSansCN-Bold.otf'
+    F = lambda px: ImageFont.truetype(str(font), px)
+    c = CONTENT['styles'][sid]
+    f = c['film']
+    paper, line, ink, ink2 = (253, 248, 239), (217, 205, 184), (30, 25, 21), (100, 90, 78)
+    deck, hole = (39, 33, 27), (199, 192, 181)
+    acc_ink = mix(hexrgb(c['accent']), ink, .62)
+    W, m, pad = CARD_W, 14, 12
+    cw = W - 2 * m
+    fw = cw - 2 * pad                       # film frame
+    sw = fw - 2 * 10                        # screen inside it
+    sh = round(sw * 9 / 16)
+    fh = sh + 2 * 15
+    th = 22 + 30 + 14 + 26 + 4              # gap, title, gap, style
+    ch = pad + fh + th + 22
+    H = ch + 2 * m + 6
+    im = Image.new('RGBA', (W, H), (60, 40, 20, 0))
+    shadow = Image.new('L', (W, H), 0)
+    ImageDraw.Draw(shadow).rounded_rectangle((m, m + 5, m + cw, m + ch + 5), 20, fill=70)
+    im.putalpha(shadow.filter(ImageFilter.GaussianBlur(7)))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((m, m, m + cw - 1, m + ch - 1), 20, fill=paper, outline=line, width=2)
+    fx, fy = m + pad, m + pad
+    d.rounded_rectangle((fx, fy, fx + fw - 1, fy + fh - 1), 14, fill=deck)
+    for y in (fy + 7, fy + fh - 8):                                   # sprocket holes
+        for x in range(fx + 12, fx + fw - 8, 16):
+            d.ellipse((x - 3, y - 3, x + 3, y + 3), fill=hole)
+    poster = Image.open(MEDIA / f'{sid}.webp').convert('RGB')
+    r = max(sw / poster.width, sh / poster.height)
+    poster = poster.resize((round(poster.width * r), round(poster.height * r)), Image.LANCZOS)
+    poster = poster.crop(((poster.width - sw) // 2, (poster.height - sh) // 2, (poster.width - sw) // 2 + sw, (poster.height - sh) // 2 + sh))
+    pm = Image.new('L', (sw, sh), 0); ImageDraw.Draw(pm).rounded_rectangle((0, 0, sw - 1, sh - 1), 7, fill=255)
+    sx, sy = fx + 10, fy + 15
+    im.paste(poster, (sx, sy), pm)
+    # the film's length, as the gallery's tag: a dark pill with a play mark
+    ft = F(24); label = mmss(f['seconds'])
+    tw = d.textlength(label, font=ft)
+    px0, py1 = sx + 12, sy + sh - 12
+    pill = Image.new('RGBA', (W, H), (0, 0, 0, 0)); pd = ImageDraw.Draw(pill)
+    pd.rounded_rectangle((px0, py1 - 38, px0 + 50 + tw, py1), 19, fill=(20, 16, 12, 170))
+    im = Image.alpha_composite(im, pill); d = ImageDraw.Draw(im)
+    d.polygon([(px0 + 15, py1 - 27), (px0 + 15, py1 - 11), (px0 + 29, py1 - 19)], fill=(255, 255, 255))
+    d.text((px0 + 37, py1 - 19), label, font=ft, fill=(255, 255, 255), anchor='lm')
+    # the film's title on the first line, small and quiet; then the reel number and the style
+    tx0 = fx + 10                                                     # aligned with the poster's left edge
+    ty = fy + fh + 22
+    title = f['title'][lang] if lang == 'en' else f'《{f["title"][lang]}》'
+    size = 21
+    while d.textlength(title, font=F(size)) > cw - 2 * pad - 20 and size > 16:
+        size -= 1
+    d.text((tx0 - (6 if lang == 'zh' else 0), ty), title, font=F(size), fill=(138, 126, 110), anchor='lt')
+    no, kind = f'{i:02d}', short_name(s, lang)
+    ks = 31
+    while d.textlength(f'{no}  {kind}', font=F(ks)) > cw - 2 * pad - 20 and ks > 24:
+        ks -= 1
+    fs, fn = F(ks), F(round(ks * .72))
+    base = ty + 30 + 14 + round(ks * .8)                              # title line, gap, style cap height
+    d.text((tx0, base), no, font=fn, fill=acc_ink, anchor='ls')
+    d.text((tx0 + d.textlength(no, font=fn) + 10, base), kind, font=fs, fill=ink, anchor='ls')
+    return im
+
+
+def readme_cards(styles):
+    """readme/cards/<id>-<lang>.webp, rewritten only when the picture changed."""
+    out = README / 'cards'
+    out.mkdir(parents=True, exist_ok=True)
+    n = 0
+    for lang in README_TEXT:
+        for i, sid in enumerate(PUBLISHED):
+            if not (MEDIA / f'{sid}.webp').exists():
+                continue
+            buf = BytesIO(); readme_card(sid, styles[sid], lang, i + 1).save(buf, 'WEBP', quality=86, method=6)
+            dst = out / f'{sid}-{lang}.webp'
+            if not dst.exists() or dst.read_bytes() != buf.getvalue():
+                dst.write_bytes(buf.getvalue()); n += 1
+    if n:
+        print(f'  readme/cards: {n} cards written')
 
 
 def update_readmes(styles):
-    """Rewrite the styles-and-films grid between <!-- styles:start ...--> and <!-- styles:end --> in both READMEs."""
-    for lang, (fname, sec, watch) in README_GRID.items():
-        p = ROOT / fname
+    """Rewrite the style cards between <!-- styles:start ...--> and <!-- styles:end --> in both READMEs."""
+    readme_cards(styles)
+    for lang, rt in README_TEXT.items():
+        p = ROOT / rt['file']
         if not p.exists():
             continue
-        cells = []
-        for sid in PUBLISHED:
-            name, line = style_text(styles[sid], lang)
-            f = CONTENT['styles'][sid]['film']
-            url = CONTENT['films_url'] + f['file']
+        cards, films = [], []
+        for i, sid in enumerate(PUBLISHED):
+            s, c = styles[sid], CONTENT['styles'][sid]
+            f = c['film']
+            name, line = style_text(s, lang)
             title = f['title'][lang] if lang == 'en' else f'《{f["title"][lang]}》'
-            cells.append(f'<td width="50%" valign="top">\n<a href="{url}"><img src="docs/media/{sid}.webp" alt="{e(f["title"][lang])}" width="100%"></a><br>\n'
-                         f'<b>{e(name)}</b> · <code>{sid}</code><br>\n'
-                         f'<a href="{url}">{watch} <b>{e(title)}</b></a> · {f["seconds"]:g} {sec}<br>\n'
-                         f'<sub>{e(line)}</sub>\n</td>')
-        rows = ['<table>'] + [f'<tr>\n{cells[i]}\n{cells[i + 1]}\n</tr>' for i in range(0, len(cells), 2)] + ['</table>']
+            alt = rt['alt'].format(n=f'{i + 1:02d}', name=name, line=line, title=f['title'][lang], len=mmss(f['seconds']))
+            cards.append(f'<a href="{rt["site"]}#{sid}"><img src="docs/readme/cards/{sid}-{lang}.webp" width="25%" align="top" alt="{e(alt)}"></a>')
+            films.append(f'<code>{sid}</code> <a href="{CONTENT["films_url"] + f["file"]}">{e(title)}</a>')
+        rows = []
+        for k in (0, 4):                                    # a row of four cards, then its films, as the opuscar README does
+            rows += [''.join(cards[k:k + 4]), '', f'<sub>{rt["films"]}' + ' · '.join(films[k:k + 4]) + '</sub>', '']
+        block = '\n'.join(rows).rstrip('\n')
         text = p.read_text(encoding='utf-8')
-        new, n = re.subn(r'(<!-- styles:start[^\n]*-->\n).*?(<!-- styles:end -->)', lambda m: m.group(1) + '\n'.join(rows) + '\n' + m.group(2),
+        new, n = re.subn(r'(<!-- styles:start[^\n]*-->\n).*?(\n<!-- styles:end -->)', lambda mm: mm.group(1) + block + mm.group(2),
                          text, flags=re.S)
         if n and new != text:
             p.write_text(new, encoding='utf-8')
-            print(f'  {fname}: styles grid updated')
+            print(f'  {rt["file"]}: style cards updated')
 
 
-def readme_process(src):
-    """readme/process.webp: character sheet, action sheet, empty background, the frame in the film; left to right."""
+def process_panes(src, k=1):
+    """The four "how it works" panes at k times 372 x 280: character sheet and action sheet on a transparency checker,
+    each centred both ways, then the empty background and the film's frame, cropped to fill. None without the film."""
     from PIL import ImageDraw
+    film = latest_film(FILMS_DIR, PROCESS['film']) if FILMS_DIR else None
+    if not film:
+        return None
     sheet = Image.open(src / PROCESS['sheet']).convert('RGBA')
     act = Image.open(src / PROCESS['action']).convert('RGBA')
     bg = Image.open(src / PROCESS['bg']).convert('RGB')
-    film = latest_film(FILMS_DIR, PROCESS['film']) if FILMS_DIR else None
-    if not film:
-        return
     frame = film_frame(film, PROCESS['at']).convert('RGB')
-    pw, ph, gap, pad = 372, 280, 40, 24
-    W = pad * 2 + pw * 4 + gap * 3
-    out = Image.new('RGB', (W, ph + pad * 2), (245, 239, 228))
-    d = ImageDraw.Draw(out)
+    pw, ph, sq = 372 * k, 280 * k, 14 * k
 
     def checker():
         c = Image.new('RGB', (pw, ph), (255, 250, 241)); cd = ImageDraw.Draw(c)
-        for y in range(0, ph, 14):
-            for x in range(0, pw, 14):
-                if (x // 14 + y // 14) % 2: cd.rectangle((x, y, x + 13, y + 13), fill=(236, 227, 211))
+        for y in range(0, ph, sq):
+            for x in range(0, pw, sq):
+                if (x // sq + y // sq) % 2: cd.rectangle((x, y, x + sq - 1, y + sq - 1), fill=(236, 227, 211))
         return c
 
     def fit(im, box_w, box_h):
         im = im.copy(); im.thumbnail((box_w, box_h), Image.LANCZOS); return im
 
     def cover(im):
-        k = max(pw / im.width, ph / im.height)
-        im = im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS)
+        r = max(pw / im.width, ph / im.height)
+        im = im.resize((round(im.width * r), round(im.height * r)), Image.LANCZOS)
         return im.crop(((im.width - pw) // 2, (im.height - ph) // 2, (im.width - pw) // 2 + pw, (im.height - ph) // 2 + ph))
 
     panes = []
-    p1 = checker(); v = fit(sheet, pw - 24, ph - 40); p1.paste(v, ((pw - v.width) // 2, (ph - v.height) // 2), v); panes.append(p1)
-    p2 = checker(); v = fit(act, pw - 24, ph - 24); p2.paste(v, ((pw - v.width) // 2, (ph - v.height) // 2), v); panes.append(p2)
-    panes += [cover(bg), cover(frame)]
+    for im, mx, my in ((sheet, 24, 40), (act, 24, 24)):
+        pn = checker(); v = fit(im, pw - mx * k, ph - my * k)
+        pn.paste(v, ((pw - v.width) // 2, (ph - v.height) // 2), v); panes.append(pn)
+    return panes + [cover(bg), cover(frame)]
+
+
+def readme_process(src):
+    """readme/process.webp: character sheet, action sheet, empty background, the frame in the film; left to right.
+    The site shows the same four panes (media/process/p1-4.webp, drawn at twice the size) in a row that wraps."""
+    from PIL import ImageDraw
+    panes = process_panes(src)
+    if not panes:
+        return
+    pw, ph, gap, pad = 372, 280, 40, 24
+    W = pad * 2 + pw * 4 + gap * 3
+    out = Image.new('RGB', (W, ph + pad * 2), (245, 239, 228))
+    d = ImageDraw.Draw(out)
     mask = Image.new('L', (pw, ph), 0); ImageDraw.Draw(mask).rounded_rectangle((0, 0, pw - 1, ph - 1), 16, fill=255)
     for i, pn in enumerate(panes):
         x = pad + i * (pw + gap)
@@ -606,6 +706,10 @@ def readme_process(src):
     README.mkdir(exist_ok=True)
     out.save(README / 'process.webp', 'WEBP', quality=84, method=6)
     print(f'  readme/process.webp  {(README / "process.webp").stat().st_size // 1024} KB')
+    (MEDIA / 'process').mkdir(parents=True, exist_ok=True)
+    for i, pn in enumerate(process_panes(src, 2)):
+        save_webp(pn, MEDIA / 'process' / f'p{i + 1}.webp', 90_000)
+    print('  media/process/p1-4.webp')
 
 # --------------------------------------------------------------------------------------------- main
 

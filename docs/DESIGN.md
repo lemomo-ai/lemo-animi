@@ -73,19 +73,29 @@ letter-spacing and `line-height: 1.2`; uppercase mono labels (tape, kickers, tab
 `:lang(zh-CN)` with `.06–.1em` tracking, since CJK has no case.
 
 Scale (px): `--t-xs 12` · `--t-sm 13` · `--t-md 15` · `--t-lg 17` · `--t-xl 20` · 22 (review title) · 24 · 32 · 44 · display
-`clamp(46px, 8vw, 108px)` (gallery h1), `clamp(32px, 4.4vw, 52px)` (h2), `clamp(26px, 3.2vw, 38px)` (`h2.sm`).
+`clamp(36px, 7.4vw, 100px)` (gallery h1; `min(10vw, 44px)` on phones), `clamp(32px, 4.4vw, 52px)` (h2), `clamp(26px, 3.2vw, 38px)` (`h2.sm`).
 Body is 17/1.65 on the gallery and 15/1.6 on the review page. Numbers that line up use `.num` (tabular figures).
 
-Line breaks: headings are `text-wrap: balance`, paragraphs, list items and captions `text-wrap: pretty` (no one-word
-last lines). A hyphenated word never breaks at its hyphen: `build.py`'s `hd()` wraps it in `<span class="nb">`
-(`white-space: nowrap`) in every heading, label and the hero's "you say" line, so "Wind-up" and "Stop-motion" stay
-whole from 360 to 1440 px. Film lengths are the released file's real duration (`ffprobe`, whole seconds, title and
+Line breaks: headings and the hero's centred texts are `text-wrap: balance`, paragraphs, list items and captions
+`text-wrap: pretty`. All page text goes through `build.py`'s `tx()` / `hd()`, which glue with `<span class="nb">`
+(`white-space: nowrap`): hyphenated words ("Wind-up", "hard-edged"), version ranges ("3.11–3.13"), a number and its
+unit ("1.7 GB"), the last two short words of an English paragraph and the last four characters of a Chinese one (no
+line ends a text with one word or one character alone), and any `{phrase}` marked in `content.json` (used for
+Chinese phrases that must not split, such as `{定格动画短片}`). Chinese pages set `word-break: keep-all` with
+`overflow-wrap: anywhere`: lines break at punctuation and spaces first, so 提示词 or 审片台 stay whole, and an overlong
+run still wraps instead of overflowing. Check every section at 360, 390 and 1440 px in both languages.
+
+The hero is the same height in English and Chinese (within a few px from 360 to 1440): the h1 is two lines in both
+(the English h1 is capped at `9.6em` so it breaks after "shorts"), the two ledes are written to the same line count,
+and on phones the Chinese lede and both "you say" lines sit in boxes as tall as the English ones. When you change hero
+copy, measure both languages again. Film lengths are the released file's real duration (`ffprobe`, whole seconds, title and
 end cards included), the number a viewer actually gets; the "Film length" table is the same thing for a request.
 
 ## Space, radius, elevation
 
 - Spacing scale `--s-1 … --s-9`: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96. Section rhythm on the gallery is
-  `clamp(64px, 9vw, 120px)`; the page gutter `clamp(16px, 4vw, 40px)`; the review room padding 24 (16 on phones).
+  `clamp(40px, 5vw, 68px)` (compact: a film block is `clamp(40px, 5vw, 64px)` from the next, the footer
+  `clamp(48px, 6vw, 80px)` below the licence); the page gutter `clamp(16px, 4vw, 40px)`; the review room padding 24 (16 on phones).
 - Radii: `--r-sm 6` (chips, inline code, screens inside a frame) · `--r-md 10` (buttons, cards in lists, code
   blocks) · `--r-lg 16` (pads, viewer, frames) · `--r-xl 22` · `999px` for pills only.
 - Shadows: `--sh-1` resting card · `--sh-2` raised (viewer, film frames, toast) · `--sh-hard 2px 2px 0 <colour>` the
@@ -158,8 +168,8 @@ Transitions are `var(--step)` = `.12s steps(2, end)`.
 ## Motion
 
 - Nothing eases. Every transition is `steps(2, end)` over 120 ms; longer motions are `steps(n)` at 8 drawings a
-  second (`125 ms`): puppets turn on hover in six drawings, the toss cell plays 8 cells on `steps(8, jump-none)`,
-  the live dot and the caret blink on `steps(1)`, the waiting dot breathes on `steps(6)`.
+  second (`125 ms`): puppets turn on hover in six drawings,
+  the caret blinks on `steps(1)`, the waiting dot breathes on `steps(6)`.
 - Loops only play while on screen (IntersectionObserver), paused otherwise.
 - `prefers-reduced-motion: reduce`: all animations off, transitions off, hover transforms off, loops wait for a
   click, smooth scrolling off. The puppets still turn on click.
@@ -167,14 +177,21 @@ Transitions are `var(--step)` = `.12s steps(2, end)`.
 ## Layout
 
 - Gallery: one column, `max-width 1180px`, gutter `clamp(16px, 4vw, 40px)`. Film blocks alternate 1.25fr / 1fr.
-  Breakpoints: 960 (process 4 → 2, review 2 → 1), 860 (nav hides, films and install stack, steps 3 → 1,
-  in-progress 4 → 2), 760 (cast 8 → 4, footer cards 3 → 1), 600 (licence stacks), 520 (GitHub label hides, hero tape
-  shrinks), 480 (fit lists and process 1 column; cast labels 14 px in a 66 px box so two-word names take two lines
+  Breakpoints: 960 (process 4 → 2, review 2 → 1), 860 (nav hides, films and install stack, steps 3 → 1 with
+  the number beside the title), 760 (cast 8 → 4, footer cards 3 → 1), 600 (licence stacks, hero boxes per
+  language, footer links wrap without the spacer), 520 (GitHub label hides, hero tape shrinks), 480 (fit lists 1 column; cast labels 14 px in a 66 px box so two-word names take two lines
   and "Needle-felt" still fits a cell). The film kicker (`.meta .kind`) never shrinks; the accent rule beside it
   keeps at least 24 px.
 - Review page: `max-width 1840px`; stage `1fr` + desk `clamp(340px, 27vw, 440px)`, gap 28; the desk scrolls on its
   own at ≥ 1000. Breakpoints: 1000 (one column), 760 (bar wraps, title first, keys hidden, strip 48 px), 480 (pills
   share a row, buttons fill the row, timecode 15 px).
+- "How it works" shows the same four panes as the README's `docs/readme/process.webp` (one function in `build.py`
+  draws both; the site's `media/process/p1-4.webp` at twice the size): character sheet and action sheet centred both
+  ways on a transparency checker, then the empty background and the frame in the film, a chevron between each.
+- Only the eight released styles appear, on the site and in the READMEs. The READMEs' style section is generated
+  (GitHub strips CSS): two rows of four cards (`docs/readme/cards/<id>-<lang>.webp`, drawn by `build.py`: a paper
+  card with the film frame, the poster, its length, the reel number, style and film title, on a transparent shadow
+  that sits on GitHub's light and dark pages), each row followed by one `<sub>` line with the ids and full-film links.
 - Phone width has a 16 px gutter and no horizontal scroll; code commands scroll inside their block.
 - Accessibility: every control is a real `button` or `a` with a visible focus ring; icon buttons carry
   `aria-label`; the page language is set on `<html lang>`; colour is never the only signal (dots, text and badges

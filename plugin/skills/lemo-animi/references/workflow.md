@@ -1,17 +1,22 @@
 # Workflow: folders and commands per step
 
-`$S` = the absolute path of the `scripts/` folder next to the `SKILL.md` you loaded (in a plugin install it sits inside the agent's plugin cache; it may contain spaces, so always quote it); `$PY` = the Python printed by `sh "$S/setup.sh" python` (default `~/lemo-animi-env/venv/bin/python`, or a system Python that already has every dependency; never a bare `python`). Run every command inside the film folder.
+`$S` = the absolute path of the `scripts/` folder next to the `SKILL.md` you loaded (in a plugin install it sits inside the agent's plugin cache; it may contain spaces, so always quote it); `$PY` = the Python printed by `sh "$S/setup.sh" python` (default `~/lemo-animi-env/venv/bin/python`, or a system Python that already has every dependency; never a bare `python`). Run production commands inside the film folder.
 
 ## 0. Environment (once per machine)
 
+Run setup in the current working directory, before choosing a film folder or asking for film details.
+
 ```sh
-sh "$S/setup.sh" start          # first command: check; anything missing -> full install starts in the background (log ~/lemo-animi-env/setup.log)
-sh "$S/setup.sh"                # after the answers: waits for that install and finishes it (Python env ~300 MB + score instrument samples ~1.4 GB, resumable; no matting model)
-sh "$S/setup.sh" check          # what is missing (installs nothing)
-PY=$(sh "$S/setup.sh" python)   # the Python to use once the env exists
+if ! sh "$S/setup.sh" check; then
+    sh "$S/setup.sh" || exit 1        # wait for an existing install, then fill any gaps
+    sh "$S/setup.sh" check || exit 1
+fi
 ```
 
-ffmpeg is required. `start` is the first command, before the opening questions. The download is required, so it is never a question: it runs in the background while the user answers, and one line with the questions says what (Python env ~300 MB, instrument samples ~1.4 GB) and where (`~/lemo-animi-env`) (SKILL.md §1). Right after the answers run `sh "$S/setup.sh"`, which waits for the background install, and start the film only when `check` passes. Install only into `~/lemo-animi-env` (or the user's own `LEMO_ANIMI_HOME`); in a sandbox ask for permission to write there instead of redirecting to a temp folder. Nothing installed is installed again: a system Python that already has every dependency is used as is (`setup.sh python` prints it), an env installed earlier by Codex or Claude Code on this machine is reused, downloaded instrument libraries are skipped; two installs at once are safe (`setup.sh` waits for the other one). If the download fails (offline: `setup.sh` builds what it can and exits 1), show its message and stop until it completes; `sh "$S/setup.sh" instruments` resumes the samples.
+A first install needs network access and about 1.7 GB (Python environment ~300 MB, score instrument samples ~1.4 GB). Use `~/lemo-animi-env` or the user's configured location. Request sandbox access when needed. Codex and Claude Code share the environment. Setup reuses a complete virtual or system Python and skips downloaded libraries. Wait for completion even when the host runs the command in the background. Report a failed command and its diagnostic before asking any film questions. Re-running setup resumes missing downloads.
+
+Encoding requires ffmpeg and ffprobe (macOS: `brew install ffmpeg`, Linux: use the package manager). Claude Code also needs zsh and either the user's image adapter or an installed, signed-in Codex CLI (`npm i -g @openai/codex`, then `codex login`). Check these Claude prerequisites even if `check` exits successfully. Once ready, set `PY=$(sh "$S/setup.sh" python)` and collect the missing choices together as described in SKILL.md §1. Create the film folder only after every item has an answer or the user has explicitly delegated it.
+
 Narration uses edge-tts and needs the network: if `sound.py vo` can't connect it stops and prints a justification; request access. If refused, drop `vo` from `sound.json`, make the film without narration and say so in the report. Never substitute a local offline voice.
 
 ## 1. Film folder

@@ -30,21 +30,5 @@
  "fabric": {
   "poster": "poster.jpg@1794294217",
   "loop": "fabric-v6.mp4@25.55+6.0 h264-q2"
- },
- "shadow": {
-  "poster": "shadow-v1.mp4@10.0",
-  "loop": null
- },
- "cutout": {
-  "poster": "poster.jpg@1794294105",
-  "loop": null
- },
- "plasticine-flat": {
-  "poster": "poster.jpg@1794295275",
-  "loop": null
- },
- "miniature": {
-  "poster": "miniature-v1.mp4@36.0",
-  "loop": null
  }
 }

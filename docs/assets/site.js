@@ -49,8 +49,6 @@
       });
     }, { threshold: 0.35 });
     vids.forEach(function (v) { io.observe(v); });
-    var live = document.querySelector('.live');
-    if (live && !still) new IntersectionObserver(function (es) { live.classList.toggle('on', es[0].isIntersecting); }).observe(live);
   }
   vids.forEach(function (v) { v.addEventListener('click', function () { v.paused ? v.play() : v.pause(); }); });
 
