@@ -12,6 +12,8 @@
 
 ⭐ If you like lemo-animi, a star on GitHub helps others find it.
 
+🚧 This first release is still in development, so expect rough edges. If something goes wrong, please [open an issue](https://github.com/lemomo-ai/lemo-animi/issues). Thanks for your patience.
+
 </div>
 
 Tell Codex a story in one sentence. lemo-animi writes the story and the shot list, draws the puppets, sets and action sheets in one of eight materials with Codex's built-in image generation, cuts them out and moves them in code, frame by frame. It scores the film from real instrument samples, adds foley and opens a review page where you leave notes until you approve. No video generation: images make it look right, code makes it move. Claude Code works too, with Codex or another image model drawing the pictures.

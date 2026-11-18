@@ -20,7 +20,7 @@ P="$1"; OUT="$2"; shift 2
 [ -f "$P" ] || { echo "prompt file not found: $P"; exit 2; }
 mkdir -p "${OUT:A:h}"
 for r in "$@"; do [ -f "$r" ] || { echo "reference image not found: $r"; exit 2; }
-  case "${r:l}" in *.png|*.jpg|*.jpeg|*.webp) ;; *) echo "reference must be a still image (png, jpg, webp): $r. Extract a still from a video first."; exit 2;; esac; done
+  case "${r:l}" in *.png|*.jpg|*.jpeg) ;; *) echo "reference must be a still PNG or JPEG: $r. Export the frame or page you mean as a PNG first."; exit 2;; esac; done
 LIMIT=${GEN_TIMEOUT:-600}
 
 # ---- the user's own image tool, when they set one up

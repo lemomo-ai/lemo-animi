@@ -720,8 +720,13 @@ def cmd_mux(video, wav, out):
 def audio_check(path, tp_max=-1.0, gap=2.05):
     """Measure the finished film's sound: loudness, true peak, and dead air (near-silence >= gap s away from the ends).
     Prints one summary line and a [WARN] per problem; returns the list of warnings."""
-    p = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-i', path, '-af', f'ebur128=peak=true,silencedetect=n=-45dB:d={gap}',
-                        '-f', 'null', '-'], capture_output=True, text=True)
+    shown = path if len(path) <= 160 else path[:80] + '…'
+    try:
+        p = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-xerror', '-i', path, '-map', '0:a:0',
+                            '-af', f'ebur128=peak=true,silencedetect=n=-45dB:d={gap}', '-f', 'null', '-'], capture_output=True, text=True)
+    except FileNotFoundError:
+        print(f'  [WARN] sound measurement unavailable: ffmpeg could not be started; the sound check stays open')
+        return ['ffmpeg could not be started']
     r = p.stderr
     I = re.findall(r'I:\s+(-?[\d.]+) LUFS', r); TP = re.findall(r'Peak:\s+(-?[\d.]+) dBFS', r)
     dur = re.search(r'Duration: (\d+):(\d+):([\d.]+)', r)
@@ -731,7 +736,7 @@ def audio_check(path, tp_max=-1.0, gap=2.05):
     warn = []
     I = float(I[-1]) if I else None; TP = float(TP[-1]) if TP else None
     if p.returncode != 0 or I is None or TP is None or not dur:
-        warn.append(f'sound measurement unavailable for {path}: check the path, that the film has an audio track, and the ffmpeg output; '
+        warn.append(f'sound measurement unavailable for {shown}: the path is wrong, the film has no audio track, or the audio failed to decode; '
                     'the sound check stays open')
     if I is not None and not -16.0 <= I <= -12.5: warn.append(f'loudness {I:.1f} LUFS is outside -16..-12.5 (the mix targets -14)')
     if TP is not None and TP > tp_max: warn.append(f'true peak {TP:.1f} dBTP is above {tp_max:.0f} dBTP: rebuild the mix (sound.py build) and mux again')
