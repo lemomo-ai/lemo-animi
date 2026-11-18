@@ -172,7 +172,18 @@ if [ "$MODE" = "start" ]; then
   if OUT=$(sh "$HERE/setup.sh" check 2>&1); then say "$OUT"; exit 0; fi
   say "$OUT"
   if lock_live; then say "already installing in the background (log: $LOG); later, sh setup.sh waits for it"; exit 0; fi
-  nohup sh "$HERE/setup.sh" env > "$LOG" 2>&1 < /dev/null &
+  # detach into its own session: agents (Codex) kill the command's process group when the command returns
+  if command -v python3 >/dev/null 2>&1; then
+    python3 -c 'import os, sys
+if os.fork(): sys.exit(0)
+os.setsid()
+if os.fork(): os._exit(0)
+fd = os.open(sys.argv[2], os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644); os.dup2(fd, 1); os.dup2(fd, 2)
+os.dup2(os.open(os.devnull, os.O_RDONLY), 0)
+os.execvp("sh", ["sh", sys.argv[1], "env"])' "$HERE/setup.sh" "$LOG"
+  else
+    nohup sh "$HERE/setup.sh" env > "$LOG" 2>&1 < /dev/null &
+  fi
   say ""
   say "INSTALLING IN THE BACKGROUND: Python env (~300 MB) + score instrument samples (~1.4 GB) -> $HOME_DIR (log: $LOG)."
   say "Ask the opening questions meanwhile. After the answers run sh setup.sh: it waits for this install, then finishes or shows what failed."
