@@ -139,6 +139,7 @@ Claude writes and runs the code, but it can't draw. The pictures come from one o
 
 The first film needs a network connection and about 1.7 GB: a Python environment (about 300 MB) and the instrument samples for the score (about 1.4 GB, resumable), both in `~/lemo-animi-env`. It's required, so it isn't a question: the agent starts it in the background as soon as it begins, mentions it once with its opening questions, and after you answer starts the film only when everything is in place. If the download fails, it shows you why and waits.
 
+- Nothing already installed is installed again: a system Python 3.11–3.13 is used to build the environment (no extra Python); a system Python that already has every dependency is used as is, with nothing installed; instrument libraries already downloaded are skipped; a cut-out model already in `~/.rembg` is used.
 - Codex and Claude Code on the same machine share `~/lemo-animi-env`: whichever installs it first, the other doesn't download again.
 - The optional cut-out model (0.97 GB) is downloaded only if an asset can't be generated with a clean transparent edge.
 - `LEMO_ANIMI_HOME` moves the environment; `LEMO_ANIMI_PYTHON` picks the Python used to build it.

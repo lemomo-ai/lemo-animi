@@ -2,7 +2,8 @@
 # setup.sh -- prepare the lemo-animi runtime (POSIX sh, macOS / Linux)
 #
 # Usage:
-#   sh setup.sh          # check ffmpeg and Python -> make the venv and install deps -> download instrument samples -> print the Python to use (no cut-out model)
+#   sh setup.sh          # check ffmpeg and Python -> reuse what is already installed (a system Python that has every
+#                        # dependency, an earlier venv, samples already downloaded), make the venv and install deps only if needed -> download instrument samples -> print the Python to use (no cut-out model)
 #   sh setup.sh start    # first step of every film: check; if anything is missing, start the full install (as plain sh setup.sh)
 #                        # in the background and return at once (log: $LEMO_ANIMI_HOME/setup.log). Run plain sh setup.sh later:
 #                        # it waits for the background install, then finishes or reports what failed
@@ -71,9 +72,19 @@ pick_python() {
   echo ""
 }
 
-venv_ok() {
-  [ -x "$VENV/bin/python" ] && "$VENV/bin/python" -c 'import cv2, numpy, PIL, onnxruntime, scipy, soundfile, soxr, edge_tts' >/dev/null 2>&1
+has_deps() { [ -n "$1" ] && "$1" -c 'import cv2, numpy, PIL, onnxruntime, scipy, soundfile, soxr, edge_tts' >/dev/null 2>&1; }
+venv_ok() { [ -x "$VENV/bin/python" ] && has_deps "$VENV/bin/python"; }
+# a Python already on this system with every dependency is used as is: nothing is installed for it
+system_py() {
+  if [ -n "${LEMO_ANIMI_PYTHON:-}" ] && has_deps "$LEMO_ANIMI_PYTHON"; then echo "$LEMO_ANIMI_PYTHON"; return 0; fi
+  for c in python3.13 python3.12 python3.11 python3; do
+    p=$(command -v "$c" 2>/dev/null) || continue
+    if has_deps "$p"; then echo "$p"; return 0; fi
+  done
+  return 1
 }
+# the Python every command uses: the lemo-animi venv when it is complete, else a complete system Python
+env_py() { if venv_ok; then echo "$VENV/bin/python"; else system_py; fi; }
 
 make_venv() {
   P=$(pick_python)
@@ -134,7 +145,7 @@ get_model() {
 # ---------------- main ----------------
 INSTR_OK=1
 get_instruments() {
-  PYI=python3; [ -x "$VENV/bin/python" ] && PYI="$VENV/bin/python"
+  PYI=$(env_py) || PYI=python3
   if [ "$MODE" = "check" ]; then "$PYI" "$HERE/audio/fetch_instruments.py" --check || MISSING=1; return; fi
   "$PYI" "$HERE/audio/fetch_instruments.py" || { INSTR_OK=0; warn "instrument samples (~1.4 GB) not fully downloaded: the score needs them. Once online, sh setup.sh instruments resumes"; }
 }
@@ -145,7 +156,7 @@ check_codex() {
   else say "codex: none (only agents without built-in image generation, such as Claude, need it: npm i -g @openai/codex, then codex login; not needed in Codex)"; fi
   command -v zsh >/dev/null 2>&1 || say "zsh: none (gen.sh, used by agents without built-in image generation such as Claude, needs it: install zsh; not needed in Codex)"
 }
-if [ "$MODE" = "python" ]; then venv_ok && { echo "$VENV/bin/python"; exit 0; }; echo "Python env not ready: run sh setup.sh check to see what is missing" >&2; exit 1; fi
+if [ "$MODE" = "python" ]; then P=$(env_py) && { echo "$P"; exit 0; }; echo "Python env not ready: run sh setup.sh check to see what is missing" >&2; exit 1; fi
 if [ "$MODE" = "model" ]; then get_model; exit 0; fi
 if [ "$MODE" = "image" ]; then
   check_codex
@@ -204,6 +215,7 @@ if [ "$MODE" = "instruments" ]; then get_instruments; [ "$INSTR_OK" -eq 1 ] || e
 check_ffmpeg
 if [ "$MODE" = "check" ]; then
   if venv_ok; then say "Python env: $VENV/bin/python ($(py_ver "$VENV/bin/python"), deps complete)"
+  elif P=$(system_py); then say "Python env: $P ($(py_ver "$P"), already on this system with every dependency; nothing to install)"
   else
     P=$(pick_python)
     warn "no usable venv yet (${VENV}); it would be made with: ${P:-no Python found}"
@@ -213,15 +225,18 @@ if [ "$MODE" = "check" ]; then
   get_instruments
   check_codex
   if [ "$MISSING" -ne 0 ]; then warn "something is missing; run sh setup.sh to fill it in (needs network: ~300 MB for the env, ~1.4 GB of instrument samples)"; exit 1; fi
-  say "All ready. Compositing scripts use this interpreter: $VENV/bin/python"
+  say "All ready. Compositing scripts use this interpreter: $(env_py)"
   exit 0
 fi
 [ "$MISSING" -eq 0 ] || warn "install ffmpeg before rendering films (venv and model are prepared anyway)"
-if venv_ok; then say "Python env ready: $VENV"; else make_venv; fi
+if venv_ok; then say "Python env ready: $VENV"
+elif P=$(system_py); then say "Python env: $P already has every dependency; using it, no venv made"
+else make_venv; fi
 get_instruments
 get_model
 say ""
 say "Done. Compositing, slicing and cut-out all use this interpreter:"
-say "  $VENV/bin/python"
-say "e.g. $VENV/bin/python <skill>/scripts/animi.py check src/run.png --out review/run_check.jpg"
+PYE=$(env_py) || PYE="$VENV/bin/python"
+say "  $PYE"
+say "e.g. $PYE <skill>/scripts/animi.py check src/run.png --out review/run_check.jpg"
 [ "$INSTR_OK" -eq 1 ] || { warn "instrument samples incomplete (no score possible): once online, sh setup.sh instruments"; exit 1; }
