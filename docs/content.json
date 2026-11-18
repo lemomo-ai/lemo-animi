@@ -124,7 +124,7 @@
    "install_steps": [
     [
      "Add the plugin",
-     "Codex: run both in a terminal, then start a new chat. Claude Code: type the line in the chat, then /reload-plugins."
+     "Codex: run both in a terminal, then start a new chat. Claude Code: type the line in the chat, then /reload-plugins, and make films in auto mode (Shift+Tab)."
     ],
     [
      "Ask for a film",
@@ -301,7 +301,7 @@
    "install_steps": [
     [
      "装插件",
-     "Codex 在终端里运行，装好后新开一个对话。Claude Code 直接在对话里输入，再 /reload-plugins。"
+     "Codex 在终端里运行，装好后新开一个对话。Claude Code 直接在对话里输入，再 /reload-plugins；做片子时按 Shift+Tab 切到 auto 模式。"
     ],
     [
      "开口要片子",

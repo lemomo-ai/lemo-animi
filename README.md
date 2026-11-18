@@ -120,6 +120,8 @@ Type this in the chat, then `/reload-plugins` (or start a new session):
 /plugin install lemo-animi --marketplace lemomo-ai/lemo-animi
 ```
 
+**Make films in auto mode.** A film runs a few hundred commands, and in the default mode Claude Code asks before each one. Press Shift+Tab until the footer shows auto mode, or start with `claude --permission-mode auto`. Skipping permissions altogether isn't needed.
+
 Claude writes and runs the code, but it can't draw. The pictures come from one of these:
 
 - **Codex on the same machine (default).** `npm i -g @openai/codex`, then `codex login` with an account that can generate images. lemo-animi calls it for every picture.

@@ -120,6 +120,8 @@ codex plugin add lemo-animi@lemomo-ai
 /plugin install lemo-animi --marketplace lemomo-ai/lemo-animi
 ```
 
+**做片子时用 auto 模式。** 一支片子要跑几百条命令，默认模式下 Claude Code 每条都会先问你。按 Shift+Tab 切到底栏显示 auto 模式，或者用 `claude --permission-mode auto` 启动。不需要完全跳过权限确认。
+
 Claude 负责写代码、跑代码，但它自己不会画图。图从下面两处之一来：
 
 - **本机的 Codex（默认）。** `npm i -g @openai/codex`，再 `codex login`，登录一个能生图的账号。lemo-animi 每张图都会调用它。
