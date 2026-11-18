@@ -11,7 +11,10 @@ description: Make a short stop-motion animated film from one line ("story + styl
 
 ## 1. Talking to the user
 
-**Language.** The skill is in English; talk to the user in their language (questions, options, every progress note between tool calls, report). If they wrote nothing to infer it from, the first question asks it ("语言 Language": 中文 / English). That is also the film's language unless they ask otherwise: `sound.json` `"lang": "zh" | "en"` sets narration, subtitles and card text (`references/sound.md`); `review.py add … --lang` sets the page; `animi.py styles --lang` lists styles.
+**Language.** The skill is in English. Talk to the user in the language they write in, whatever it is (questions, options, every progress note between tool calls, review-page replies, report). If nothing shows it (no words from the user and no language set by your own instructions), ask that alone first (item L), then everything else in the chosen language.
+- **The film's own text** (narration, subtitles, title and end cards) is Chinese or English: Chinese for a Chinese-speaking user, English for everyone else unless they ask for Chinese; when the user writes neither, the narration question says so. Set it with `init_film.py --lang zh|en` (it goes into `sound.json` `"lang"`, `references/sound.md`).
+- **The review page**: `review.py add … --lang <the user's language code>` (zh, en, ja, …): Chinese gets the Chinese page, every other language the English page.
+- **Style list**: `animi.py styles --lang zh|en`; for other languages use `en` and translate the one-liners.
 
 | Item | Default and handling |
 |---|---|
@@ -23,13 +26,25 @@ description: Make a short stop-motion animated film from one line ("story + styl
 | Preview | Off: work straight through. On (or the user sent a character image): show character sheets and main backgrounds once on the review page, continue after approval. |
 | Title and end cards | Off. On: title and credit come in the same question. No title given: title it from the story and say so in a progress note. Never invent a credit. Each card is 3 s, so the story runs the length minus 6 s. |
 
-**Ask everything once, before starting** (before reading the style package): every item the user's line didn't cover, plus "anything else?". With a question tool, put **all questions in one call** (Codex: `request_user_input` in Plan mode, `request_user_input_async` in default mode when it's there; Claude `AskUserQuestion`), options in the user's language, default first and marked "(Recommended)" in their language; free text (title, credit, wishes) goes in the tool's free-text box, never an extra "I'll type it" option. If the tool caps questions per call, use the fewest calls back to back with nothing in between; list overflow options in the question text; if the tool has no free-text box, ask the free-text questions in one plain follow-up message. Only with no question tool at all: one message, numbered questions, each with options and default; "all defaults" means defaults. In Claude Code, the same message also says once that a film runs a few hundred commands and auto mode (Shift+Tab, or `claude --permission-mode auto`) saves an approval for each; never suggest skipping permissions. Then stop and wait: don't start on defaults. Wishes in the answers go into the director's plan. After intake, **work through to the final film without asking again**, only one- or two-line progress notes; the only stop is the optional preview.
+**Ask everything once, before starting** (before reading the style package). First run `sh "$S/setup.sh" check`. Then ask, in one round, every item of the list below that the user's line didn't settle, in the list's order:
+- **Each item is its own question.** Never merge items, never fold them into one "use the defaults / adjust" question, never ask one question per call or per message.
+- **With a question tool, all questions go in one call** (item L, when needed, goes alone before it). Codex: `request_user_input_async` in default mode when it's there. In Plan mode `request_user_input` works, but Plan mode can't make the film: after the answers, tell the user in one line to switch to default mode and say go. Claude's `AskUserQuestion` takes at most 4 questions per call: fill the calls in list order, 4 each, back to back with nothing in between (every item open: 0–3, then 4–7); a leftover item gets a call of its own, never folded into another question.
+- **Few options per question** (Claude 2–4, Codex 2–3). The style item names every style with its one-liner in the question text; its options are the style that best fits this story (Recommended), a second fitting one, and "you decide"; any other style by free text. The other items fit as listed.
+- Options in the user's language, default first and marked "(Recommended)" in their language. Free text (story, title, credit, wishes) goes in the tool's free-text box, never an extra "I'll type it" option; if the tool has no free-text box, ask those in one plain follow-up message.
+- Only with no question tool at all: one message, numbered questions, each with options and default; "all defaults" means defaults.
+- **Download notice, not a question**: if `check` found the Python env or instrument samples missing, the text right before the questions (or the top of the message) says once: about 1.7 GB (Python env ~300 MB + score instrument samples ~1.4 GB) goes to `~/lemo-animi-env` and starts as soon as they answer. Nothing is downloaded before the answer. If `check` passed (an earlier install by Codex or Claude Code on this machine counts), don't mention it.
+- **What you can't install, say now**: ffmpeg missing → the user installs it (macOS `brew install ffmpeg`, Linux the package manager). In Claude Code, `check` also reports the image tool: neither Codex CLI nor an adapter → the user installs and logs in to Codex (`npm i -g @openai/codex`, then `codex login`); no zsh (some Linux) → the user installs zsh. Put these in the same notice; after the answers, install what you can and wait for them.
+- In Claude Code, the same text says once that a film runs a few hundred commands and auto mode (Shift+Tab, or `claude --permission-mode auto`) saves an approval for each; never suggest skipping permissions.
+
+Then stop and wait: don't start on defaults. **After the answers, environment first**: if anything was missing, run `sh "$S/setup.sh"` (in a sandbox, request escalated permission to write `~/lemo-animi-env`; never point `LEMO_ANIMI_*` at a temp folder to get around it), send one progress line while it downloads, and start the film only once `sh "$S/setup.sh" check` passes. If the download fails, show its message and stop; never start a film on a half-installed environment. Wishes in the answers go into the director's plan. From then on, **work through to the final film without asking again**, only one- or two-line progress notes; the only stop is the optional preview.
 
 ```
-1. Style: animi.py styles --lang <lang>, one line each + what stories it suits   (only if no style given; first)
+L. Language: English / 中文 / other (free text)   (only when nothing shows it: no words from the user and no language set by your own instructions; asked alone, first)
+0. Story: you decide (default) / free text (a title or one line is enough)   (only if the user gave none)
+1. Style: python3 "$S/animi.py" styles --lang zh|en (works before the env exists): all styles in the question text; options = best fit (Recommended) / second fit / you decide   (only if no style given)
 2. Length: 40 s (default) / 20 / 60 s (another length up to 2 min: free text)
 3. Size: landscape (default) / portrait / square
-4. Narration: none (default) / lively female / child (bilingual subtitles: free text)
+4. Narration: none (default) / lively female / child (bilingual subtitles: free text; narration and subtitles are Chinese or English, see Language)
 5. Title and end cards: none (default) / yes (title and credit in free text)
 6. Preview characters and backgrounds: no (default) / yes (default when the user sent a character image)
 7. Anything else: no, you decide (default) / free text (plot, palette, ending, a character image)
@@ -38,6 +53,7 @@ description: Make a short stop-motion animated film from one line ("story + styl
 ## 2. Work until it passes
 
 - **Before the director's plan read**: `styles/<id>/STYLE.md`, `references/directing.md`, `references/quality.md`, `references/pitfalls.md`. Other docs at the step that needs them.
+- **Long commands**: `setup.sh` (first run), `gen.sh` (up to 10 min per image), full renders and `review.py wait` (30 min) outlast a default tool timeout. Codex: keep polling the running command. Claude Code: its Bash tool stops a command at 10 min, so run `setup.sh`, full renders and `wait` with `run_in_background: true` and carry on when it reports back; give each `gen.sh` call a 600000 ms timeout or run it in the background.
 - **Aim to pass, not to be fast**: images and time per length are in the §3 table (40 s: about 20–26 images and an hour or more). Below the asset minimums it is unfinished.
 - **A failed check, bad slice or off anchor changes the plan, it doesn't stop you**: look it up in the handling table in `quality.md` (`--allow-edge`, `--clean`, `--group grid` pass after you check the image). Regenerate only real defects (max 3 times per image, one change each time), or split / recompose.
 - **The first render is not the delivery.** Watch the whole film, the `selfcheck.py` sheets, consecutive frames at every cut and contact; listen to the whole soundtrack. Clear the `sound.py check` warnings and the render's `liveness` warnings (fix, or list each with its reason in `review.py add --known`). Can't listen (no audio input): write "not listened" and check what can be measured (`sound.py check`; each landing or impact sound on the drawing where it lands, `sound.py times` beside the contact frames; stems in `audio/`). Write a verdict with timecodes for each must-pass item in `quality.md`, fix, review again. What you didn't watch or hear is "not checked", never "pass".
@@ -50,11 +66,11 @@ Commands and folders: `references/workflow.md` (also the tools list and the revi
 
 | Step | What | Read |
 |---|---|---|
-| 0 | `$S` = absolute path of the `scripts/` folder next to this file (quote it: `"$S/…"`); `$PY` = output of `sh "$S/setup.sh" python`, for every Python command. `sh "$S/setup.sh" check`; if something is missing, `sh "$S/setup.sh"` (about 1.7 GB, network, writes `~/lemo-animi-env`). Run `check` before the opening questions; if anything is missing, the download (what, size, where) is one more item in those questions, and nothing is downloaded before the answer. In a sandbox, request escalated permission to write `~/lemo-animi-env`; never point `LEMO_ANIMI_*` at a temp folder to get around it (every later film would download it again) | workflow §0 |
+| 0 | `$S` = absolute path of the `scripts/` folder next to this file (quote it: `"$S/…"`); `$PY` = output of `sh "$S/setup.sh" python`, for every Python command. `sh "$S/setup.sh" check` before the opening questions; if something is missing, a one-line notice with the questions, then `sh "$S/setup.sh"` right after the answers (about 1.7 GB, network, writes `~/lemo-animi-env`); the film starts only once `check` passes (§1) | workflow §0 |
 | 1 | Style package: `STYLE.md`, `style.json`, `ref/` and `poster.jpg` where present | |
 | 2 | **Director's plan** in `production-log.md`: logline, story skeleton with seconds per part, beat sheet, narration, shot list, layered action table, image list | directing |
 | 3 | **Timing**: with narration, write it in `sound.json`, `sound.py vo` gives line lengths, shots follow; without, seconds per beat (a beat is 2–4 s and holds several events) | sound |
-| 3′ | `"$PY" "$S/init_film.py" <film folder> --style <id> --dur <story seconds> --size <landscape|portrait|square> --name <name>` (creates the folder; run everything after inside it) → write `SHOTS` + `build()` → `film.py lint` | compositing |
+| 3′ | `"$PY" "$S/init_film.py" <film folder> --style <id> --dur <story seconds> --size <landscape|portrait|square> --name <name> --lang <zh|en>` (creates the folder; run everything after inside it) → write `SHOTS` + `build()` → `film.py lint` | compositing |
 | 4 | Images: slot file → `animi.py prompt` → generate. Character sheets and 1–2 key backgrounds first; check palette and character. Codex: built-in image_gen, references in `referenced_image_paths`, `transparent_background: true` for transparent assets, copy from the returned path | prompts, workflow §4 |
 | ⏸ | Preview (only if on): register, wait for approval | workflow, review page |
 | 4′ | Other backgrounds → `load()` → `film.py board` (open the `board_p*.jpg` pages); shots connect | |
@@ -104,6 +120,6 @@ A prop acting alone (a lamp lights itself, a boat drifts) is prop images + fx sh
 - **The last message is the report**, in the user's language, written out in full with all five numbered parts in this order, even where the app favours short replies. A link to `production-log.md` never replaces a part; item 3 lists every must-pass item on its own line.
   1. Title and logline; style; length and size; shots.
   2. Images: total, and backgrounds / action sheets / close-up sheets / props / fx; how many regenerated.
-  3. Must-pass items (`quality.md`): one line each, pass / fixed / known issue / not checked.
+  3. Must-pass items (`quality.md` §3): one line each, pass / fixed / known issue / not checked.
   4. What you're least happy with, and anything not done (no network, no audio check…).
   5. Where the film and the review page are.

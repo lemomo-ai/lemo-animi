@@ -73,12 +73,12 @@ def _is_latin(s):
 def film_lang(lang=None, root=None, text=None):
     """Film language for default card text: lang if given, else sound.json's lang in root, else 'en' when text is all
     Latin, else 'zh'"""
-    if lang: return 'en' if str(lang).lower().startswith('en') else 'zh'
+    if lang: return 'zh' if str(lang).lower().startswith('zh') else 'en'
     p = os.path.join(root, 'sound.json') if root else None
     if p and os.path.exists(p):
         try:
             v = json.load(open(p, encoding='utf-8')).get('lang')
-            if v: return 'en' if str(v).lower().startswith('en') else 'zh'
+            if v: return 'zh' if str(v).lower().startswith('zh') else 'en'
         except (OSError, ValueError): pass
     return 'en' if text and _is_latin(text) else 'zh'
 

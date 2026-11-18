@@ -2,7 +2,7 @@
 """Create a film folder: make the subfolders, copy the compositing template to tools/film.py (skill path, style, size and
 short name filled in), and write the start of sound.json.
 
-    "$PY" "$S/init_film.py" <film folder> --style <style id> --dur <story seconds> [--size landscape|portrait|square] [--name <short name>]
+    "$PY" "$S/init_film.py" <film folder> --style <style id> --dur <story seconds> [--size landscape|portrait|square] [--name <short name>] [--lang zh|en]
 
 Existing tools/film.py or sound.json are never overwritten (safe when resuming an old film). The short name defaults to
 the folder name.
@@ -24,6 +24,7 @@ def main():
     ap.add_argument('--dur', type=float, default=40.0, help='story length in seconds: the film length, minus 6 with title and end cards (14–120)')
     ap.add_argument('--size', default='landscape', choices=SIZE_CHOICES)
     ap.add_argument('--name', help='short name: out/<name>.mp4; defaults to the folder name')
+    ap.add_argument('--lang', default='en', help='film language for narration, subtitles and cards: zh or en (any other code falls back to en)')
     a = ap.parse_args()
     a.size = OLD_SIZES.get(a.size, a.size)
 
@@ -57,7 +58,7 @@ def main():
         print(f'{snd} exists, not overwritten')
     else:
         with open(snd, 'w', encoding='utf-8') as f:
-            json.dump({'style': a.style, 'dur': a.dur, 'name': name}, f, ensure_ascii=False, indent=1)
+            json.dump({'style': a.style, 'dur': a.dur, 'name': name, 'lang': 'zh' if a.lang.lower().startswith('zh') else 'en'}, f, ensure_ascii=False, indent=1)
         print(f'wrote {snd} (add score, foley and narration as references/sound.md describes)')
 
 

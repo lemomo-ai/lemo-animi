@@ -27,7 +27,7 @@ Not for: fast slapstick or big squash-and-stretch comedy; busy scenes in bright 
 - **Rigid**: no (idle breathing ±1.2%).
 - **Transitions**: `wool_smear` (`kind: smear`, in from the top, out at the bottom, asset `fx_smear_tex`), `tr='wool_smear'` in SHOTS. `lamp_glow` (`kind: glow`): the previous shot pushes toward a warm lamp and the scene changes at peak bloom.
 - **Title plate**: cream rounded felt plate with warm red stitches (`stitch`), deep blue text; texture from the wool close-up used for the smear, plain plate if that image doesn't exist.
-- **Smear asset**: no layout template; write one prompt: style anchor (`prompts/anchor.txt`) + "a landscape 16:9 macro close-up: one whole sheet of fluffy white wool pressed against a pane of glass, filling the entire frame, wool on all four edges and corners, no gaps or background showing; individual fine fibres and fluffy tufts visible, cold blue moonlight. Only wool in the frame" + the common rules (`_common/_rules.txt`).
+- **Smear asset** `src/fx_smear_tex.png`: built with the `texture` type (`animi.py prompt felt texture`, `[material]` carrying this meaning): "a landscape 16:9 macro close-up: one whole sheet of fluffy white wool pressed against a pane of glass, filling the entire frame, wool on all four edges and corners, no gaps or background showing; individual fine fibres and fluffy tufts visible, cold blue moonlight. Only wool in the frame".
 
 ## Pitfalls
 

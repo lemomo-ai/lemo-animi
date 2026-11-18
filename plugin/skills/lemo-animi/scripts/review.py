@@ -132,10 +132,16 @@ def _thumbs(root, video_abs, shots, fid):
     return out if any(out) else []
 
 
+def _ui(lang):
+    """Built-in page text: zh for any Chinese code, en for everything else (other languages get the English page)"""
+    return 'zh' if str(lang or '').lower().startswith('zh') else 'en'
+
+
 def _lang(d, lang, title='', known=()):
-    """Page language: --lang if given; else this folder's last one; else zh if the title or known issues contain Chinese characters, otherwise en"""
-    if lang in LANGS: return lang
-    if d.get('lang') in LANGS: return d['lang']
+    """Page language code (any, e.g. zh, en, ja): --lang if given; else this folder's last one; else zh if the title or
+    known issues contain Chinese characters, otherwise en. The page itself is Chinese or English (_ui)"""
+    if lang: return str(lang).strip().lower()
+    if d.get('lang'): return d['lang']
     return 'zh' if re.search(r'[\u4e00-\u9fff]', (title or '') + ''.join(known or ())) else 'en'
 
 
@@ -154,7 +160,7 @@ def add_images(paths, fid, title='', root='.', known=(), lang=None):
         shutil.copy(src, _p(root, rel))
         imgs.append(dict(src=rel, name=label.strip() or os.path.splitext(os.path.basename(src))[0]))
     d['lang'] = _lang(d, lang, title, known)
-    title = (title or '').strip() or ('Characters and backgrounds' if d['lang'] == 'en' else '角色和背景')
+    title = (title or '').strip() or ('Characters and backgrounds' if _ui(d['lang']) == 'en' else '角色和背景')
     film = dict(id=fid, title=title, kind='images', images=imgs, src=imgs[0]['src'] if imgs else '', shots=[], dur=None,
                 fps=24, known=list(known), at=datetime.now().strftime('%m-%d %H:%M'), thumbs=[])
     old = d.get('film')
@@ -221,7 +227,7 @@ def build(root='.'):
     if f and not f.get('fps') and f.get('kind') != 'images':
         f['fps'] = _probe(_p(root, f['src']))[0] or 24
     key = 'review-' + hashlib.md5(os.path.abspath(root).encode()).hexdigest()[:10]
-    lang = d.get('lang') if d.get('lang') in LANGS else 'zh'
+    lang = _ui(d.get('lang'))
     page = (TEMPLATE.replace('__TITLE__', _html.escape(d.get('title') or ('Review' if lang == 'en' else '审片台')))
             .replace('__SUFFIX__', 'Review' if lang == 'en' else '审片').replace('__LANG__', 'en' if lang == 'en' else 'zh-CN')
             .replace('__DATA__', json.dumps(d, ensure_ascii=False).replace('</', '<\\/'))
@@ -302,6 +308,8 @@ def wait(root='.', timeout=1800, poll=2.0):
     timeout = max(float(timeout), 1800.0)   # --timeout can only lengthen the wait: the user gets at least 30 min
     try: seen = float(open(_p(root, SEEN)).read() or 0)
     except (OSError, ValueError): seen = 0
+    import signal
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))   # a host killing the command still clears the "waiting" marker
     t0 = time.time()
     _wj(_p(root, WAIT), dict(pid=os.getpid(), since=t0, until=t0 + timeout))   # the page shows "the agent is waiting"
     try:
@@ -846,7 +854,7 @@ const I18N = {
   needNotes:'No notes yet. Pause where something needs fixing and press Enter; if it all looks right, click Approve', needNotesI:'No notes yet. Pick an image and press Enter to write one; if it all looks right, click Approve', submitFail:'Could not send: the local server is down. Your notes are still on the page; tell the agent in the chat',
   mdVerdict:v=>`Verdict: ${v === 'ok' ? 'approved' : 'needs fixes'}`, mdNoTime:'(no time)', mdFrame:f=>` · frame ${f}`, mdShot:(k,n)=>` · shot ${k} "${n}"`, copied:'Copied. Paste it into the chat'}
 };
-const T = I18N[D.lang === 'en' ? 'en' : 'zh'];
+const T = I18N[String(D.lang || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'];
 document.querySelectorAll('[data-t]').forEach(el => el.textContent = T[el.dataset.t]);
 document.querySelectorAll('[data-tt]').forEach(el => el.title = T[el.dataset.tt]);
 
@@ -1234,7 +1242,7 @@ if __name__ == '__main__':
     a.add_argument('--id', required=True, help='id of this version, e.g. film-v1; a new id replaces the old version')
     a.add_argument('--title', default='', help='title on the review page (default: the video file name); unrelated to the title card')
     a.add_argument('--known', action='append', default=[], help='an issue you saw and have not fixed; repeatable')
-    a.add_argument('--lang', choices=LANGS, help='page language = the language you talk to the user in: zh or en; omitted = last one')
+    a.add_argument('--lang', help='the language you talk to the user in (zh, en, ja, …): Chinese codes get the Chinese page, every other language the English one; omitted = last one')
     a.add_argument('--root', default='.')
     for name in ('build', 'notes', 'open'):
         x = sub.add_parser(name); x.add_argument('--root', default='.')

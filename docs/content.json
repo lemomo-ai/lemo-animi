@@ -128,7 +128,7 @@
     ],
     [
      "Ask for a film",
-     "The first time, it asks before it downloads the Python environment and the instrument samples (about 1.7 GB)."
+     "The first time, it downloads the Python environment and the instrument samples (about 1.7 GB) right after its opening questions, then starts the film."
     ]
    ],
    "copy": "Copy",
@@ -305,7 +305,7 @@
     ],
     [
      "开口要片子",
-     "第一次用时，下载 Python 运行环境和乐器采样（约 1.7 GB）之前它会先问你。"
+     "第一次用时，开工提问回答完就下载 Python 运行环境和乐器采样（约 1.7 GB），装好再开始做片。"
     ]
    ],
    "copy": "复制",

@@ -90,7 +90,7 @@ Tools point at places to look, not all of them need redoing:
 | `check` ground line / height spread WARN | — | deliberate crouch, jump, puff-up; floating or top-down characters (`--float`) |
 | Jump cut | adjacent shots from the same camera with hero size differing by less than 1.5× | the cut sheet shows it isn't (different angle, just similar tones): `cut_ok='reason'` on the shot |
 | Zoom cut | hard cut in the same place and same `view` that only changes size; a close-up whose hero is under 2× the previous; one place flipping shot size 3+ times | the cut sheet shows a real change of view and `view` was just missing: add it; otherwise `cut_ok='reason'` on the shot |
-| Long hold | dead hold (nothing moves) | camera pushing, environment moving: `live='reason'` on the state |
+| Long hold | dead hold (nothing moves) | a side character or the environment visibly moving (camera motion alone doesn't count): `live='reason'` on the state |
 | Repeated action | the same action replayed unchanged a third time, a walk running too long in one shot, a two- or three-cell back-and-forth | a deliberate repeat gag, a walk crossing the whole frame: `rep_ok='reason'` on that state |
 | Size mismatch across shots | same size jumping, tighter size without a bigger hero | character walking toward camera, deliberate framing: `size_ok='reason'` on the shot; for height-jump warnings at sheet changes, look at both stills first; crouch, jump and similar pose changes need no fix |
 | Hero too small | fix by default | deliberate distant framing that isn't the opening or payoff: `min=` on the shot, reason in the production log |
@@ -102,5 +102,5 @@ Tools point at places to look, not all of them need redoing:
 - Director's plan (logline, beat sheet, narration script, shot list, layered action table, image list)
 - Image log: each image's name, regenerations and why
 - Problems found in each review round and how they were fixed
-- **A verdict for each must-pass item** (all 16 in §3, each "pass / fail + evidence")
+- **A verdict for each must-pass item** (all 16 in §3, each "pass / fixed / known issue / not checked" + evidence)
 - Self-assessment (1–5) and what you're least happy with

@@ -21,10 +21,13 @@
 #   animi.place_at(frame, cel['toss_3'], x, ground_y, s, info=A['toss_3'])
 # Full API: references/api.md.
 import os, sys, re, json, glob, math, argparse
-import numpy as np, cv2
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import kit
+try:
+    import numpy as np, cv2
+    import kit
+except ImportError:                 # `animi.py styles` must work with the system python3 before the env exists (opening questions)
+    if not (__name__ == '__main__' and sys.argv[1:2] == ['styles']): raise
+    np = cv2 = kit = None
 
 INK = (0.10, 0.10, 0.115)          # ink colour (slightly cool black)
 

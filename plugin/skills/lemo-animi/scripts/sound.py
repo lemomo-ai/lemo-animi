@@ -13,7 +13,7 @@ Sound sheet (sound.json, in the same film folder as film.py):
  "style": "clay",                 # style id: sets score instrumentation, foley material, default voice, subtitle style
  "dur": 30.0,                     # film length in seconds
  "name": "penguin-pancake",       # file name of the output srt
- "lang": "en",                                  # film language: zh (default) / en. Narration in this language; for bilingual subtitles the second line goes in the other language's field
+ "lang": "en",                                  # film language: zh / en (init_film.py --lang writes it; other codes fall back to en). Narration in this language; for bilingual subtitles the second line goes in the other language's field
  "voice": {"voice": "en-US-AvaNeural", "rate": "+0%", "pitch": "+0Hz"},   # optional, defaults to the style's; en child voice en-US-AnaNeural; zh default zh-CN-XiaoyiNeural, child zh-CN-YunxiaNeural
  "vo": [{"id": "L1", "t": 0.8, "text": "Little Penguin wanted to make the perfect pancake."},   # optional: missing or [] = no narration (no subtitles, score not ducked)
                                                                            # t = second this line starts (set it after vo gives the lengths)
@@ -61,8 +61,10 @@ VOICES = {'zh': {'lively': 'zh-CN-XiaoyiNeural', 'child': 'zh-CN-YunxiaNeural'},
 
 
 def film_lang(d):
-    """Film language (top-level lang in sound.json: zh / en, default zh): narration, subtitles, title and end cards use it"""
-    return 'en' if str(d.get('lang', 'zh')).lower().startswith('en') else 'zh'
+    """Film language (top-level lang in sound.json: zh / en; init_film.py writes it): narration, subtitles, title and end cards use it.
+    Missing: zh for older films; any other language code falls back to en"""
+    l = str(d.get('lang', 'zh')).lower()
+    return 'zh' if l.startswith('zh') else 'en'
 
 
 def second_lang(d):

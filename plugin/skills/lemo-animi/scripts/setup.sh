@@ -140,6 +140,7 @@ check_codex() {
   if [ -f "$ADAPTER" ]; then say "images: your adapter $ADAPTER (gen.sh uses it instead of Codex; experimental; sh setup.sh image tests it)"; return; fi
   if command -v codex >/dev/null 2>&1; then say "codex: $(command -v codex) (agents without built-in image generation, such as Claude, generate images with gen.sh)"
   else say "codex: none (only agents without built-in image generation, such as Claude, need it: npm i -g @openai/codex, then codex login; not needed in Codex)"; fi
+  command -v zsh >/dev/null 2>&1 || say "zsh: none (gen.sh, used by agents without built-in image generation such as Claude, needs it: install zsh; not needed in Codex)"
 }
 if [ "$MODE" = "python" ]; then venv_ok && { echo "$VENV/bin/python"; exit 0; }; echo "Python env not ready: run sh setup.sh check to see what is missing" >&2; exit 1; fi
 if [ "$MODE" = "model" ]; then get_model; exit 0; fi

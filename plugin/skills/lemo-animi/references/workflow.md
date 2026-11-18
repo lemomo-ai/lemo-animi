@@ -10,7 +10,7 @@ PY=$(sh "$S/setup.sh" python)   # the Python to use once the env exists
 sh "$S/setup.sh"                # Python env (~300 MB of packages) + score instrument samples (~1.4 GB, resumable); no matting model
 ```
 
-ffmpeg is required. Run `check` before the opening questions; anything missing goes into those questions (what, how big, where it goes) and is downloaded only after the user agrees. Install only into `~/lemo-animi-env` (or the user's own `LEMO_ANIMI_HOME`); in a sandbox ask for permission to write there instead of redirecting to a temp folder. Two installs at once are safe: `setup.sh` waits for the other one to finish. Offline, `setup.sh` still builds the venv and prints the Python, then exits 1 because the instrument samples are missing: the env is usable for everything but the score; fetch the samples later with `sh "$S/setup.sh" instruments`.
+ffmpeg is required. Run `check` before the opening questions. The download is required, so it is never a question: if anything is missing, one line with the questions says what (Python env ~300 MB, instrument samples ~1.4 GB), where (`~/lemo-animi-env`) and that it starts once they answer (SKILL.md §1). Right after the answers run `sh "$S/setup.sh"`, and start the film only when `check` passes. Install only into `~/lemo-animi-env` (or the user's own `LEMO_ANIMI_HOME`); in a sandbox ask for permission to write there instead of redirecting to a temp folder. An env installed earlier by Codex or Claude Code on this machine is reused, nothing downloads again; two installs at once are safe (`setup.sh` waits for the other one). If the download fails (offline: `setup.sh` builds what it can and exits 1), show its message and stop until it completes; `sh "$S/setup.sh" instruments` resumes the samples.
 Narration uses edge-tts and needs the network: if `sound.py vo` can't connect it stops and prints a justification; request access. If refused, drop `vo` from `sound.json`, make the film without narration and say so in the report. Never substitute a local offline voice.
 
 ## 1. Film folder
@@ -28,7 +28,6 @@ Narration uses edge-tts and needs the network: if `sound.py vo` can't connect it
   frames/                rendered frames (deletable after delivery)
   out/                   <name>.mp4, contact.jpg
   review.html, review/   the review page and every registered version; review.notes.json holds the user's notes
-                         (older films' 审片台.* files are renamed to these on first use)
 ```
 
 ## 2. Director's plan (before any image)
@@ -40,18 +39,18 @@ Write it in `production-log.md` per `references/directing.md`: logline → beat 
 **With narration** (sound first):
 
 ```sh
-# sound.json: only style, dur, name and the vo text (t empty); name is the short name, identical to NAME in tools/film.py
+# sound.json: only style, dur, name, lang (init_film.py writes them) and the vo text (t empty); name is the short name, identical to NAME in tools/film.py
 "$PY" "$S/sound.py" vo sound.json     # synthesises each line, prints length and speech rate (stops with a reason if offline)
 ```
 
 Lay out the shot list by line length: roughly one shot per line, 0.3–1 s between lines for picture and sound. Then write each line's `t` back into `sound.json`.
 
-**Without narration**: `sound.json` holds only `style`, `dur`, `name`, no `vo`. Give each shot seconds from the beat sheet (a story beat is 2–4 s and holds several events; one quiet beat before the twist); the score's sections (`energy` in `sections`) and hits carry the rise and fall.
+**Without narration**: `sound.json` holds only `style`, `dur`, `name`, `lang`, no `vo`. Give each shot seconds from the beat sheet (a story beat is 2–4 s and holds several events; one quiet beat before the twist); the score's sections (`energy` in `sections`) and hits carry the rise and fall.
 
 ## 3′. Compositing script (before generating images)
 
 ```sh
-"$PY" "$S/init_film.py" pancake --style clay --dur 40 --size landscape --name pancake   # creates ./pancake; run everything after this inside it
+"$PY" "$S/init_film.py" pancake --style clay --dur 40 --size landscape --name pancake --lang en   # --lang zh or en (film text); creates ./pancake; run everything after this inside it
 ```
 
 It creates the subfolders, copies the template to `tools/film.py` with `SKILL`, `STYLE_ID`, `SIZE`, `NAME` filled in, and writes `style`, `dur`, `name` into `sound.json` (existing files are not overwritten). Then set `HERO_H` and write `SHOTS` + `build()` from the shot list (placeholder blocks for characters and backgrounds):
@@ -136,7 +135,7 @@ Each card is 3 s (`--sec`, 2.5–4; plan the story as the length minus both card
 
 ## Review page: preview (on request) and final film
 
-`$R` = `"$PY" "$S/review.py"` (define it as a shell function so quoted paths survive: `R() { "$PY" "$S/review.py" "$@"; }`, then `R add …`), run in the film folder. One local page, opened at most twice; register only two things: the character sheets and main backgrounds when the user wants a preview, and the final film. Nothing else is registered or paused on.
+`$R` below is shorthand for `"$PY" "$S/review.py"`: type that out in every command (each tool call starts a fresh shell, so set `S` and `PY` again in each one), run in the film folder. One local page, opened at most twice; register only two things: the character sheets and main backgrounds when the user wants a preview, and the final film. Nothing else is registered or paused on.
 
 - **Where to open**: with a built-in browser panel (Codex app, right side) `open --no-browser` and open the printed URL in the panel; otherwise (Codex CLI, terminal) `open`, which uses the system browser. One place only. The page runs a local server on a port, which a sandbox usually blocks: in Codex run `open` with escalated permission from the start (justification: open the local review page). If the panel answers `queued` (this conversation is not in front), also give the user the printed URL in chat and say the page opens when they come back to this conversation.
 - **Character preview** (only if the user asked or sent their own character image), after the character sheets and 1–2 main backgrounds are generated and checked: register them (`label=path`, labels show on the page), open, tell the user in one or two lines in their language which images these are and what to look at (design, palette, likeness to their image); they click an image to write a note and press a button. `wait` as for the film. Changes requested: regenerate per the notes (old character sheet or the user's image as reference), `reply … --done`, register as `chars-v2`, wait again. Approved: work through to the final film without stopping again; once the film is registered, the character entry folds below it.
@@ -144,14 +143,14 @@ Each card is 3 s (`--sec`, 2.5–4; plan the story as the length minus both card
 
 ```sh
 # preview (user asked, or sent their own character image): character sheets + main backgrounds, label=path
-$R add hero=src/char_hero.png wide=src/bg_wide.png --id chars-v1 --title "<title or story>" --lang <zh|en>
+$R add hero=src/char_hero.png wide=src/bg_wide.png --id chars-v1 --title "<title or story>" --lang <the user's language code>
 # final film: rendered, one round of self-review fixes done
-$R add out/<name>.mp4 --id film-v1 --known "issue seen but not fixed yet" --lang <zh|en>   # shot list attached automatically
+$R add out/<name>.mp4 --id film-v1 --known "issue seen but not fixed yet" --lang <the user's language code>   # shot list attached automatically
 $R open --no-browser        # built-in browser panel (Codex app, right side): start the server, print the URL, open it in the panel
 $R open                     # no panel (Codex CLI, terminal): start the server, open the system browser, print the URL
 ```
 
-Then describe the version and what to focus on in three to five lines, and **run `wait` in the foreground** (up to 30 min by default; set the command timeout above 31 min; if the tool returns in chunks, keep waiting). **Never pass a shorter `--timeout` and never stop waiting early**: the user may still be watching or writing notes, and anything you deliver before the wait ends skips their review:
+Then describe the version and what to focus on in three to five lines, and **run `wait`** (30 min; Codex: in the foreground, command timeout above 31 min, keep polling if it returns in chunks; Claude Code: with `run_in_background: true`, carry on when it reports back). **Never pass a shorter `--timeout` and never stop waiting early**: the user may still be watching or writing notes, and anything you deliver before the wait ends skips their review:
 
 ```sh
 $R wait                     # on submit or approve, prints every note with id, timecode and shot (image number for a preview) and text; exit code 3 = no answer in 30 min

@@ -124,7 +124,7 @@ Type this in the chat, then `/reload-plugins` (or start a new session):
 
 Claude writes and runs the code, but it can't draw. The pictures come from one of these:
 
-- **Codex on the same machine (default).** `npm i -g @openai/codex`, then `codex login` with an account that can generate images. lemo-animi calls it for every picture.
+- **Codex on the same machine (default).** `npm i -g @openai/codex`, then `codex login` with an account that can generate images. lemo-animi calls it for every picture (through zsh, which macOS has; on Linux install it).
 - **Your own image tool (experimental).**
   1. Copy `scripts/image_adapter.example.sh` from the skill folder (`~/.claude/plugins/cache/lemomo-ai/lemo-animi/<version>/skills/lemo-animi/`) to `~/lemo-animi-env/image.sh`.
   2. Adapt it to your tool. Keep keys in your environment, not in the file.
@@ -137,9 +137,9 @@ Claude writes and runs the code, but it can't draw. The pictures come from one o
 
 ### First film
 
-The first time you ask for a film, it needs a network connection: it tells you what it will download, a Python environment (about 300 MB, in `~/lemo-animi-env`) and the instrument samples for the score (about 1.4 GB, resumable), and asks before it starts.
+The first film needs a network connection and about 1.7 GB: a Python environment (about 300 MB) and the instrument samples for the score (about 1.4 GB, resumable), both in `~/lemo-animi-env`. It's required, so it isn't a question: the agent mentions it once with its opening questions, downloads right after you answer, and starts the film only when everything is in place. If the download fails, it shows you why and waits.
 
-- Offline, it can still build the environment if PyPI is reachable, and fetches the samples later.
+- Codex and Claude Code on the same machine share `~/lemo-animi-env`: whichever installs it first, the other doesn't download again.
 - The optional cut-out model (0.97 GB) is downloaded only if an asset can't be generated with a clean transparent edge.
 - `LEMO_ANIMI_HOME` moves the environment; `LEMO_ANIMI_PYTHON` picks the Python used to build it.
 
@@ -174,7 +174,15 @@ Make a 40-second clay stop-motion about a penguin learning to flip pancakes.
 
 The short form works too: `make with lemo-animi: <story>, <style>, <length>, <size>`. To call it by name, type `$` in Codex or `/` in Claude Code and pick lemo-animi.
 
-Anything you didn't say (style, length: 40 s by default, 20 s to 2 min, landscape / portrait / square, narration, title and end cards, a preview of the characters first) it asks once, before it starts, all in one go, defaults first. Then it works straight through to the finished film. Questions, progress notes, narration, subtitles and the review page follow your language.
+What happens next:
+
+1. **It asks once.** Everything you didn't say, each as its own question with the default first: story (if you gave none), style, length (40 s by default, 20 s to 2 min), size (landscape / portrait / square), narration, title and end cards, a preview of the characters first, anything else. Codex shows them in one form, Claude Code in pop-ups of up to four. Answer "all defaults" if you like. If it can't tell your language, it asks that first; the first time, it also mentions the download.
+2. **First time only: it installs the environment** (see [First film](#first-film)), and starts once it's in place.
+3. **It makes the film without stopping**: director's plan, images, animation, sound, then its own review and fixes. You see only short progress notes. If you asked for a preview, it stops once to show the characters and main backgrounds.
+4. **It opens the review page.** Leave notes and send them, or approve ([Review and revise](#review-and-revise)).
+5. **It delivers**: the film and its files, plus a short report (what it made, the images it generated, the checks, what it isn't happy with, where the files are).
+
+It talks to you in whatever language you write in. Narration, subtitles and title cards are in English or Chinese (English unless you write in Chinese or ask for it), and so is the review page.
 
 **Model.** In Codex, use GPT-6.2 Sol or GPT-6.2 Astra with reasoning set to High or above. GPT-6.1 Sol and GPT-6 Astra, also at High or above, work too.
 
