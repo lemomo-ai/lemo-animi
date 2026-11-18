@@ -1,0 +1,50 @@
+{
+ "clay": {
+  "poster": "poster.jpg@1794293644",
+  "loop": "clay-v9.mp4@23.27+6.0 h264-q2"
+ },
+ "papercraft": {
+  "poster": "poster.jpg@1794293710",
+  "loop": "papercraft-v5.mp4@34.5+6.0 h264-q2"
+ },
+ "tin": {
+  "poster": "tin-v2.mp4@24.0",
+  "loop": "tin-v2.mp4@24.27+6.0 h264-q2"
+ },
+ "felt": {
+  "poster": "poster.jpg@1794293746",
+  "loop": "felt-v3.mp4@25.02+6.0 h264-q2"
+ },
+ "cardboard": {
+  "poster": "poster.jpg@1794294755",
+  "loop": "cardboard-v5.mp4@25.76+6.0 h264-q2"
+ },
+ "wood": {
+  "poster": "poster.jpg@1794294911",
+  "loop": "wood-v4.mp4@10.0+6.0 h264-q2"
+ },
+ "crochet": {
+  "poster": "poster.jpg@1794294802",
+  "loop": "crochet-v6.mp4@25.68+6.0 h264-q2"
+ },
+ "fabric": {
+  "poster": "poster.jpg@1794294217",
+  "loop": "fabric-v6.mp4@25.55+6.0 h264-q2"
+ },
+ "shadow": {
+  "poster": "shadow-v1.mp4@10.0",
+  "loop": null
+ },
+ "cutout": {
+  "poster": "poster.jpg@1794294105",
+  "loop": null
+ },
+ "plasticine-flat": {
+  "poster": "poster.jpg@1794295275",
+  "loop": null
+ },
+ "miniature": {
+  "poster": "miniature-v1.mp4@36.0",
+  "loop": null
+ }
+}

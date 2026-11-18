@@ -1,0 +1,15 @@
+{
+  "name": "lemomo-ai",
+  "owner": {
+    "name": "Lemomo (LemoLab)",
+    "email": "lemomo.studio@gmail.com"
+  },
+  "description": "Film-making skills from Lemomo (LemoLab).",
+  "plugins": [
+    {
+      "name": "lemo-animi",
+      "source": "./plugin",
+      "description": "Stop-motion short films from one line."
+    }
+  ]
+}

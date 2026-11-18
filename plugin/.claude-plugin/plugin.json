@@ -1,0 +1,14 @@
+{
+  "name": "lemo-animi",
+  "version": "0.1.0",
+  "description": "Stop-motion short films from one line: story, style, length. Eight materials, original score and foley, a review page for your notes.",
+  "author": {
+    "name": "Lemomo (LemoLab)",
+    "email": "lemomo.studio@gmail.com",
+    "url": "https://x.com/lemomo_ai"
+  },
+  "homepage": "https://lemomo-ai.github.io/lemo-animi/",
+  "repository": "https://github.com/lemomo-ai/lemo-animi",
+  "license": "CC-BY-NC-4.0",
+  "keywords": ["stop-motion", "animation", "film", "claymation", "video"]
+}

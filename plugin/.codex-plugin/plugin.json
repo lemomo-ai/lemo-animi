@@ -1,0 +1,27 @@
+{
+  "name": "lemo-animi",
+  "version": "0.1.0",
+  "description": "Stop-motion short films from one line: story, style, length. Eight materials, original score and foley, a review page for your notes.",
+  "author": {
+    "name": "Lemomo (LemoLab)",
+    "email": "lemomo.studio@gmail.com",
+    "url": "https://x.com/lemomo_ai"
+  },
+  "homepage": "https://lemomo-ai.github.io/lemo-animi/",
+  "repository": "https://github.com/lemomo-ai/lemo-animi",
+  "license": "CC-BY-NC-4.0",
+  "keywords": ["stop-motion", "animation", "film", "claymation", "video"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Lemo Animi",
+    "shortDescription": "Stop-motion short films from one line",
+    "longDescription": "Tell it a story in one sentence and pick a material (clay, papercraft, tin toy, needle felt, cardboard, wooden puppet, crochet, patchwork fabric). It generates the puppets and sets with an image model, moves them in code frame by frame, scores the film from real instrument samples, adds foley, and opens a review page for your notes. No video generation.",
+    "developerName": "Lemomo (LemoLab)",
+    "category": "Creativity",
+    "websiteURL": "https://lemomo-ai.github.io/lemo-animi/",
+    "defaultPrompt": [
+      "Make a 40-second clay stop-motion about a penguin learning to flip pancakes",
+      "Make a 20-second felt stop-motion: a rabbit leaves its lamp with a squirrel afraid of the dark"
+    ]
+  }
+}

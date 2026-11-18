@@ -1,0 +1,51 @@
+{
+ "clay": {
+  "key": "char_bobo.png@1794200260",
+  "cw": 257,
+  "w": 1028
+ },
+ "papercraft": {
+  "key": "char_fox.png@1794232748",
+  "cw": 236,
+  "w": 944
+ },
+ "tin": {
+  "key": "char_dudu.png@1794232841",
+  "cw": 283,
+  "w": 1132
+ },
+ "felt": {
+  "key": "char_tt.png@1794235089",
+  "cw": 195,
+  "w": 780
+ },
+ "cardboard": {
+  "key": "char_fang.png@1794235228",
+  "cw": 221,
+  "w": 884
+ },
+ "wood": {
+  "key": "char_lizi.png@1794237040",
+  "cw": 158,
+  "w": 632
+ },
+ "crochet": {
+  "key": "char_pupu.png@1794237287",
+  "cw": 253,
+  "w": 1012
+ },
+ "fabric": {
+  "key": "char_dou.png@1794238750",
+  "cw": 229,
+  "w": 916
+ },
+ "process": {
+  "action": "sheet_bobo_toss.png@1794216613",
+  "cell": [
+   300,
+   300
+  ],
+  "bg": "bg_stove_mid.png@1794200435",
+  "frame": "clay-v9.mp4@17.5"
+ }
+}

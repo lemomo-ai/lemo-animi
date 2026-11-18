@@ -1,0 +1,734 @@
+{
+ "films_url": "https://github.com/lemomo-ai/lemo-animi/releases/download/films/",
+ "contact": "lemomo.studio@gmail.com",
+ "text": {
+  "en": {
+   "title": "lemo-animi · stop-motion shorts from one line",
+   "desc": "An agent skill for Codex and Claude Code that makes short stop-motion films from one line, in eight materials.",
+   "h1": "Stop-motion shorts from one line",
+   "lede": "Tell it a story in one sentence and pick a material: it generates the puppets and sets with an image model, moves them in code frame by frame, scores the film and adds foley, then opens a review page for your notes. No video generation.",
+   "ask": "Make a 40-second clay stop-motion about a penguin learning to flip pancakes.",
+   "you_say": "You say",
+   "nav": {
+    "films": "Sample films",
+    "styles": "Styles",
+    "how": "How it works",
+    "install": "Install",
+    "licence": "Licence",
+    "review": "Review"
+   },
+   "films_h": "Sample films",
+   "films_p": "Each one made by the skill on its own, from one sentence. Chinese narration and subtitles.",
+   "watch": "Watch the film",
+   "loop": "6-second loop",
+   "say": "Say",
+   "good": "Good for",
+   "bad": "Not for",
+   "seconds": "s",
+   "styles_h": "Eight styles",
+   "styles_p": "Each style is a fixed package: prompt templates, lighting, camera grammar, score and foley.",
+   "wip_h": "In progress",
+   "wip_p": "Still being tested, not in the first release.",
+   "how_h": "How it works",
+   "how": [
+    [
+     "It asks once",
+     "Whatever your sentence left out (style, length, size, narration, title cards) comes in one set of questions, defaults first. Then it works through to the end."
+    ],
+    [
+     "It plans",
+     "A story skeleton with seconds per part, beats, a shot list and an image list."
+    ],
+    [
+     "It generates the pictures",
+     "Character sheets, backgrounds, 8-cell action sheets and 2×2 close-up sheets on transparent backgrounds, in one material."
+    ],
+    [
+     "It animates in code",
+     "The sheets are cut into cells and timed on twos or threes, with camera moves, contact shadows, light and grade."
+    ],
+    [
+     "It adds sound",
+     "An original score from real instrument samples, foley on every contact, optional narration and subtitles."
+    ],
+    [
+     "You review",
+     "A local review page: pause on any moment and write a note; it fixes every note until you approve."
+    ]
+   ],
+   "len_h": [
+    "Length",
+    "Shots",
+    "Generated images"
+   ],
+   "lens": [
+    [
+     "20 s",
+     "2–4",
+     "~10–14"
+    ],
+    [
+     "40 s (default)",
+     "5–8",
+     "~20–26"
+    ],
+    [
+     "60 s",
+     "6–12",
+     "~30–38"
+    ],
+    [
+     "2 min",
+     "12–22",
+     "~55–68"
+    ]
+   ],
+   "install_h": "Install",
+   "install_p": "Two commands in Codex, one line in Claude Code. You need macOS or Linux with ffmpeg and Python 3.11–3.13; images come from Codex.",
+   "install_link": "Full install guide: updates, removal, manual install",
+   "licence_h": "Licence",
+   "licence_p": "CC BY-NC 4.0: free for non-commercial use, with credit. Any commercial use needs a commercial licence, and that includes making films for commercial purposes with it. Write to",
+   "foot": "Every frame on this page comes from a sample film the skill made by itself.",
+   "switch": "中文",
+   "readme": "README",
+   "skill": "SKILL.md",
+   "by": "By Lemomo (LemoLab)",
+   "kicker": "An agent skill for Codex and Claude Code",
+   "cta_films": "Watch the films",
+   "cta_install": "Install",
+   "cast_h": "The cast",
+   "cast_p": "Eight materials, eight leads, each from its sample film. Point at one and it turns round, one drawing at a time.",
+   "films_watch": "Watch",
+   "loop_note": "Muted 6-second loop. The full film has the score, foley and narration.",
+   "proc_h": "Images make it look right. Code makes it move.",
+   "proc_p": "The image model never draws a moving picture. It draws sheets; Python cuts them into cells and times them on twos, over a background, with shadows, light and camera.",
+   "proc": [
+    [
+     "Character sheet",
+     "Front, three-quarter, side and back, in the style’s material."
+    ],
+    [
+     "Action sheet",
+     "Eight poses of one action, on a transparent background."
+    ],
+    [
+     "Background",
+     "An empty set, drawn from the shot’s camera angle."
+    ],
+    [
+     "Moved in code",
+     "The cells on twos, over the set. This one is live."
+    ]
+   ],
+   "steps_h": "From one line to a film",
+   "install_steps": [
+    [
+     "Add the plugin",
+     "Codex: run both in a terminal, then start a new chat. Claude Code: type the line in the chat, then /reload-plugins."
+    ],
+    [
+     "Ask for a film",
+     "The first time, it checks ffmpeg and Python and asks before it downloads the environment and the instrument samples (about 1.7 GB)."
+    ]
+   ],
+   "copy": "Copy",
+   "copied": "Copied",
+   "live": "Live",
+   "need": "macOS or Linux · ffmpeg · Python 3.11–3.13 or uv · images through Codex (Claude Code uses the Codex CLI, or your own image tool, experimental)",
+   "wip_badge": "Testing",
+   "more_h": "More from LemoLab",
+   "more": [
+    [
+     "lemo-opuscar",
+     "https://github.com/lemomo-ai/lemo-opuscar",
+     "99 film styles made entirely in code."
+    ],
+    [
+     "lemo-wake",
+     "https://github.com/lemomo-ai/lemo-wake",
+     "One picture in, a seamless loop of about five seconds out."
+    ],
+    [
+     "lemo-mod",
+     "https://github.com/lemomo-ai/lemo-mod",
+     "Re-skin Claude Code with 21 styles."
+    ]
+   ],
+   "top": "Back to top",
+   "theme": "Light or dark",
+   "review_eyebrow": "Review",
+   "review_h": "You review, it revises",
+   "review_p": "When the film is ready, the agent opens a review page in your browser: the film above a strip of its shots.",
+   "review_pts": [
+    [
+     "Write a note where it happens",
+     "Pause on the moment and press Enter. The time, frame and shot are attached, and a pin marks the note on the strip."
+    ],
+    [
+     "Send it",
+     "The agent works through every note, replies under each one with what it changed, and adds the next version. The page asks you to reload."
+    ],
+    [
+     "Approve it",
+     "When it looks right, click Approve and the agent delivers the film."
+    ]
+   ],
+   "review_pill": "Agent is waiting · 26 min left",
+   "review_wait_h": "Take your time",
+   "review_wait": "The top of the page shows whether the agent is waiting for you, for up to 30 minutes. If time runs out, nothing is lost: notes are saved as you write. When you are done, click Send or Approve and tell the agent in the chat.",
+   "review_alt": "The review page: the film paused at 0:18.40, three notes pinned on the film strip, one marked Fixed with the agent's reply",
+   "model": "Recommended in Codex: GPT-6.2 Sol or GPT-6.2 Astra, reasoning High or above. GPT-6.1 Sol and GPT-6 Astra work too."
+  },
+  "zh": {
+   "title": "lemo-animi · 一句话做一支定格动画",
+   "desc": "给 Codex 和 Claude Code 用的 agent skill：一句话做一支定格动画短片，八种材质。",
+   "h1": "一句话，做一支定格动画短片",
+   "lede": "用一句话说一个故事、挑一种材质：它用生图模型做出角色和布景，在代码里一格一格地让它们动起来，配乐、加拟音，最后打开审片台等你写意见。不用视频生成。",
+   "ask": "做一支 40 秒的黏土定格动画：小企鹅学做煎饼。",
+   "you_say": "你说",
+   "nav": {
+    "films": "样片",
+    "styles": "风格",
+    "how": "怎么做出来的",
+    "install": "安装",
+    "licence": "许可证",
+    "review": "审片"
+   },
+   "films_h": "样片",
+   "films_p": "每一支都是 skill 自己从一句话做出来的，中文旁白和字幕。",
+   "watch": "看完整样片",
+   "loop": "6 秒循环",
+   "say": "怎么说",
+   "good": "适合",
+   "bad": "不适合",
+   "seconds": "秒",
+   "styles_h": "八种风格",
+   "styles_p": "每种风格是一个固定的风格包：提示词模板、光线、机位写法、配乐和拟音。",
+   "wip_h": "还在做的风格",
+   "wip_p": "还在测试，不在第一版里。",
+   "how_h": "怎么做出来的",
+   "how": [
+    [
+     "开工前问一次",
+     "你那句话没说到的（风格、时长、画幅、旁白、片头片尾）一次问齐，默认项排第一；之后一路做到成片。"
+    ],
+    [
+     "先定方案",
+     "故事骨架和每段秒数、节拍、镜头表、生图清单。"
+    ],
+    [
+     "生图",
+     "角色设定、背景、八格动作表、2×2 近景表，透明底，全按同一种材质。"
+    ],
+    [
+     "代码让它动",
+     "动作表切成一格一格，一拍二或一拍三排时间，加运镜、接触阴影、光和调色。"
+    ],
+    [
+     "配声音",
+     "真实乐器采样写的原创配乐，每个接触都有拟音；需要的话加旁白和字幕。"
+    ],
+    [
+     "你来审",
+     "本地审片台：停在哪一刻就在哪写意见，它逐条改完，直到你点通过。"
+    ]
+   ],
+   "len_h": [
+    "片长",
+    "镜头",
+    "生图张数"
+   ],
+   "lens": [
+    [
+     "20 秒",
+     "2–4",
+     "约 10–14"
+    ],
+    [
+     "40 秒（默认）",
+     "5–8",
+     "约 20–26"
+    ],
+    [
+     "60 秒",
+     "6–12",
+     "约 30–38"
+    ],
+    [
+     "2 分钟",
+     "12–22",
+     "约 55–68"
+    ]
+   ],
+   "install_h": "安装",
+   "install_p": "Codex 里两条命令，Claude Code 里一句话。需要 macOS 或 Linux，装好 ffmpeg 和 Python 3.11–3.13；生图走 Codex。",
+   "install_link": "完整安装说明：更新、卸载、手动安装",
+   "licence_h": "许可证",
+   "licence_p": "CC BY-NC 4.0：非商用免费，使用时署名。任何商用都需要商用授权，包括用它制作商用影片。请写信到",
+   "foot": "这一页的每一帧都来自 skill 自己做的样片。",
+   "switch": "English",
+   "readme": "说明",
+   "skill": "SKILL.md",
+   "by": "Lemomo（LemoLab）出品",
+   "kicker": "给 Codex 和 Claude Code 用的 agent skill",
+   "cta_films": "看样片",
+   "cta_install": "安装",
+   "cast_h": "主角们",
+   "cast_p": "八种材质，八位主角，都来自各自的样片。把鼠标放上去（手机上点一下），它会一格一格转过身。",
+   "films_watch": "看完整片",
+   "loop_note": "这里是 6 秒静音循环；完整样片有配乐、拟音和旁白。",
+   "proc_h": "图负责好看，代码负责动",
+   "proc_p": "生图模型从不画会动的画面，它只画「表」：角色设定、动作表、空背景。Python 把表切成一格一格，一拍二排在背景上，加阴影、光和运镜。",
+   "proc": [
+    [
+     "角色设定",
+     "正面、四分之三、侧面、背面，全按风格的材质。"
+    ],
+    [
+     "动作表",
+     "一个动作的八个姿势，透明底。"
+    ],
+    [
+     "背景",
+     "空的布景，按这个镜头的机位画。"
+    ],
+    [
+     "代码让它动",
+     "一拍二，把格子排在布景上。这一格是实时在动的。"
+    ]
+   ],
+   "steps_h": "从一句话到一支片",
+   "install_steps": [
+    [
+     "装插件",
+     "Codex 在终端里运行，装好后新开一个对话。Claude Code 直接在对话里输入，再 /reload-plugins。"
+    ],
+    [
+     "开口要片子",
+     "第一次用时，它会先检查 ffmpeg 和 Python，下载运行环境和乐器采样（约 1.7 GB）之前先问你。"
+    ]
+   ],
+   "copy": "复制",
+   "copied": "已复制",
+   "live": "实时",
+   "need": "macOS 或 Linux · ffmpeg · Python 3.11–3.13 或 uv · 生图走 Codex（Claude Code 借本机 Codex CLI，或接你自己的生图工具，实验功能）",
+   "wip_badge": "测试中",
+   "more_h": "LemoLab 的其他项目",
+   "more": [
+    [
+     "lemo-opuscar",
+     "https://github.com/lemomo-ai/lemo-opuscar",
+     "99 种影片风格，全部用代码做。"
+    ],
+    [
+     "lemo-wake",
+     "https://github.com/lemomo-ai/lemo-wake",
+     "一张图进去，出来一段约 5 秒的无缝循环。"
+    ],
+    [
+     "lemo-mod",
+     "https://github.com/lemomo-ai/lemo-mod",
+     "给 Claude Code 换皮肤，21 种风格。"
+    ]
+   ],
+   "top": "回到顶部",
+   "theme": "浅色或深色",
+   "review_eyebrow": "审片",
+   "review_h": "你来审，它来改",
+   "review_p": "片子做好后，agent 会在浏览器里打开审片台：上面是片子，下面是一格一格的胶片。",
+   "review_pts": [
+    [
+     "在哪一刻就在哪写",
+     "停在要改的那一刻按回车。时间码、帧号和镜头自动带上，胶片上钉一枚图钉。"
+    ],
+    [
+     "提交",
+     "agent 逐条去改，在每条意见下回复改了什么，再登记新的一版，页面提示你刷新。"
+    ],
+    [
+     "通过",
+     "满意了点「通过」，agent 交片。"
+    ]
+   ],
+   "review_pill": "agent 在等你 · 还剩 26 分钟",
+   "review_wait_h": "慢慢看，不着急",
+   "review_wait": "页面顶上显示 agent 是不是在等你，最多等 30 分钟。过了时间什么都不会丢：意见边写边存。写完点「提交」或「通过」，再回对话说一声就行。",
+   "review_alt": "审片台：片子停在 0:18.40，胶片上钉着三条意见，第一条已经标了「已改」和 agent 的回复",
+   "model": "Codex 里推荐 GPT-6.2 Sol 或 GPT-6.2 Astra，推理强度 High 及以上；GPT-6.1 Sol、GPT-6 Astra 也可以。"
+  }
+ },
+ "styles": {
+  "clay": {
+   "film": {
+    "file": "bobo-pancake.mp4",
+    "seconds": 45,
+    "title": {
+     "en": "Bobo's Pancake",
+     "zh": "波波的煎饼"
+    },
+    "story": {
+     "en": "A little penguin wants to flip the perfect pancake. Two tries fail; eyes shut, the third works, and the one stuck to the ceiling drops onto the mouse.",
+     "zh": "小企鹅波波想抛出一张完美的煎饼，两次都失败，闭上眼第三次成了；粘在天花板上的那张掉下来，正好给了小老鼠。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Comedy, little farces",
+     "Anthropomorphic animals",
+     "Everyday family life",
+     "A character learning one thing, succeeding on the third try"
+    ],
+    "zh": [
+     "喜剧、小闹剧",
+     "拟人小动物",
+     "日常家庭生活",
+     "角色学一件事，第三次成功"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Horror, realistic serious subjects",
+     "Big crowd scenes",
+     "Grand landscapes",
+     "Stories set mostly in the dark or at night"
+    ],
+    "zh": [
+     "恐怖、写实的严肃题材",
+     "大场面人群",
+     "宏大风景",
+     "大半在黑暗或夜里的故事"
+    ]
+   },
+   "accent": "#d9473b"
+  },
+  "papercraft": {
+   "film": {
+    "file": "lantern-whale.mp4",
+    "seconds": 48.5,
+    "title": {
+     "en": "The Swimming Lighthouse",
+     "zh": "会游泳的灯塔"
+    },
+    "story": {
+     "en": "A fox sails out with a paper lantern and a wave knocks it into the sea. In the dark, a whale lifts it back up: the whale is afraid of the dark too.",
+     "zh": "小狐狸提着纸灯笼出海，一个浪把灯打进海里；漆黑里，大鲸鱼把灯顶了回来。原来鲸鱼也怕黑。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Fairy tales, bedtime stories",
+     "Journeys, encounters",
+     "Quiet, magical night scenes",
+     "A small character in frame with something huge"
+    ],
+    "zh": [
+     "童话、睡前故事",
+     "旅程、相遇",
+     "安静、有魔力的夜景",
+     "小角色和一个巨大的东西同框"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Fast slapstick comedy",
+     "Scenes that need to orbit the character or see it from behind",
+     "Stories needing lots of soft materials (cloth, fur, water) that deform delicately"
+    ],
+    "zh": [
+     "节奏快的闹剧",
+     "要绕着角色转或从背后拍的场面",
+     "要很多会细腻变形的软材料（布、毛、水）的故事"
+    ]
+   },
+   "accent": "#e07b3f"
+  },
+  "tin": {
+   "film": {
+    "file": "dudu-windup.mp4",
+    "seconds": 47,
+    "title": {
+     "en": "Dudu's Wind-up Key",
+     "zh": "嘟嘟的发条"
+    },
+    "story": {
+     "en": "A tin elephant balances a ball in the circus after closing. On the highest throw its spring runs down, and it stops, tilted, just as the ball lands on its trunk.",
+     "zh": "打烊后的铁皮马戏团，小象顶球；抛得最高的那一下发条松了，它一顿一顿停住，球正好落在歪着的鼻尖上。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Circus, performances, contests",
+     "Machines, clocks, daily routines",
+     "Stories of running down, stopping, and being wound up again",
+     "Retro, nostalgia"
+    ],
+    "zh": [
+     "马戏、表演、比赛",
+     "机器、时钟、日常作息",
+     "发条松了、停下、又被上紧的故事",
+     "复古、怀旧"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Subtle facial acting (faces are printed and cannot deform)",
+     "Scenes needing fluid, soft movement (tumbling, running, hugging)",
+     "Outdoor nature, water and weather",
+     "Horror, realistic serious subjects"
+    ],
+    "zh": [
+     "细腻的面部表演（脸是印上去的，不会变形）",
+     "要流畅柔软动作的场面（翻滚、奔跑、拥抱）",
+     "户外自然、水和天气",
+     "恐怖、写实的严肃题材"
+    ]
+   },
+   "accent": "#2f7d6c"
+  },
+  "felt": {
+   "film": {
+    "file": "lantern-snow.mp4",
+    "seconds": 48.5,
+    "title": {
+     "en": "A Lamp on a Snowy Night",
+     "zh": "雪夜的小灯"
+    },
+    "story": {
+     "en": "A rabbit leaves its lamp with a squirrel who is afraid of the dark and walks home blind. Then a light comes up behind it.",
+     "zh": "小兔子把灯留给怕黑的小松鼠，自己摸黑回家；走不动的时候，身后亮起了光。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Cosy, quiet little stories",
+     "Winter, holidays, night",
+     "Giving gifts, waiting for someone to come home, caring for others",
+     "Bedtime stories"
+    ],
+    "zh": [
+     "温馨安静的小故事",
+     "冬天、节日、夜晚",
+     "送礼物、等人回家、照顾别人",
+     "睡前故事"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Fast slapstick, comedy with big squash-and-stretch",
+     "Harsh daylight, busy high-saturation scenes",
+     "Hard, shiny materials (metal, glass, water) in the lead",
+     "Lots of smoke and translucent effects"
+    ],
+    "zh": [
+     "快节奏闹剧、大幅压扁拉长的喜剧",
+     "刺眼的白天、热闹的高饱和场面",
+     "以金属、玻璃、水这类硬亮材质为主",
+     "大量烟雾和半透明特效"
+    ]
+   },
+   "accent": "#4a6aa5"
+  },
+  "cardboard": {
+   "film": {
+    "file": "box-moon.mp4",
+    "seconds": 50,
+    "title": {
+     "en": "Cardboard Moon Landing",
+     "zh": "纸箱登月"
+    },
+    "story": {
+     "en": "A cardboard astronaut lands on the Moon and salutes the flag. Then the camera pulls back: the bedroom floor. Distance flown: thirty centimetres.",
+     "zh": "纸箱宇航员登上月球、插旗敬礼；镜头一拉开，原来都在卧室地板上，「实际飞行距离：三十厘米」。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Comedy shorts, deadpan little adventures",
+     "Children's imagination, toys, crafts",
+     "Inventing, building things, DIY",
+     "Failing, then fixing it"
+    ],
+    "zh": [
+     "喜剧短片、一本正经的小冒险",
+     "小孩的想象、玩具、手工",
+     "发明、造东西、DIY",
+     "搞砸了再修好"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Lyrical, dreamy, beautiful subjects",
+     "Nature scenery, realistic animals",
+     "Scenes needing delicate soft materials (cloth, water, fur)"
+    ],
+    "zh": [
+     "抒情、梦幻、唯美的题材",
+     "自然风景、写实动物",
+     "要细腻软材料（布、水、毛）的场面"
+    ]
+   },
+   "accent": "#b0814b"
+  },
+  "wood": {
+   "film": {
+    "file": "lamp-bear.mp4",
+    "seconds": 47,
+    "title": {
+     "en": "Under the Lamp",
+     "zh": "灯下"
+    },
+    "story": {
+     "en": "A newly carved wooden bear wakes under an oil lamp, learns to stand and runs back from the dark. When the flame sinks, it turns the lamp up, and finds a wooden rabbit waking too.",
+     "zh": "刚刻好的小木熊在油灯下醒来，学站、被黑吓回来；灯芯矮下去时它拧亮了灯，光里还有一只小木兔也醒了。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Objects and toys coming to life",
+     "Quiet warmth, loneliness and companionship",
+     "Makers, craft, stories of creation",
+     "Small night-time adventures"
+    ],
+    "zh": [
+     "物件和玩具活过来",
+     "安静的温暖、孤独与陪伴",
+     "手艺人、创造的故事",
+     "夜里的小冒险"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Sunny outdoors, busy crowd scenes",
+     "Comedy needing soft deformation and exaggerated expressions",
+     "Soft things such as water, fire or cloth in the lead"
+    ],
+    "zh": [
+     "阳光户外、热闹人群",
+     "要软变形和夸张表情的喜剧",
+     "以水、火、布这类软东西为主"
+    ]
+   },
+   "accent": "#8b5a2b"
+  },
+  "crochet": {
+   "film": {
+    "file": "pupu-puff.mp4",
+    "seconds": 49.8,
+    "title": {
+     "en": "Puff Up, Pupu!",
+     "zh": "噗噗鼓起来"
+    },
+    "story": {
+     "en": "A pufferfish scares off the little fish every time it gets excited and puffs up. When a big current comes, it puffs up on purpose and they all hide behind it.",
+     "zh": "小河豚一激动就鼓成刺球，把小鱼全吓跑；大水流卷来时它主动鼓起来，小鱼们全躲到了它身后。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Lively little adventures, treasure hunts",
+     "Small creatures of the seabed, gardens, ponds",
+     "Making friends, a band of companions",
+     "Bright stories for young children"
+    ],
+    "zh": [
+     "热闹的小冒险、寻宝",
+     "海底、花园、池塘里的小生物",
+     "交朋友、一群伙伴",
+     "给小小孩的明亮故事"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Dark, tense or scary subjects",
+     "Stories needing crisp, hard-edged action (fights, machines)",
+     "Realistic water, fire, smoke",
+     "Large-scale extreme-wide shots"
+    ],
+    "zh": [
+     "阴暗、紧张、吓人的题材",
+     "要干脆硬朗动作的故事（打斗、机器）",
+     "写实的水、火、烟",
+     "大场面的超远景"
+    ]
+   },
+   "accent": "#e0a92a"
+  },
+  "fabric": {
+   "film": {
+    "file": "dou-shortcut.mp4",
+    "seconds": 49.6,
+    "title": {
+     "en": "Dou Takes the Shortcut",
+     "zh": "豆豆抄近路"
+    },
+    "story": {
+     "en": "The last duckling in line gets lost, follows a seam of stitches across the patchwork fields and hops over the river on buttons. For once, it arrives first.",
+     "zh": "走在最后的小鸭走散了，顺着一道针脚穿过拼布田野、踩着纽扣过河；这一回，第一个到池塘的是它。"
+    }
+   },
+   "good_for": {
+    "en": [
+     "Stories of setting out, travelling, looking for something",
+     "Farms, countryside, the four seasons",
+     "A band of companions moving in a line",
+     "Gentle coming-of-age stories"
+    ],
+    "zh": [
+     "出发、旅行、找东西的故事",
+     "农场、乡村、四季",
+     "排成一串走路的一群伙伴",
+     "温柔的成长故事"
+    ]
+   },
+   "bad_for": {
+    "en": [
+     "Night scenes, dark tones, tense thrilling subjects",
+     "Cities, technology, machinery",
+     "Fast fights, comedy with big deformation",
+     "Stories set entirely in one small room (wastes the fields)"
+    ],
+    "zh": [
+     "夜景、暗色调、紧张刺激的题材",
+     "城市、科技、机器",
+     "快速打斗、大变形喜剧",
+     "整个故事都在一个小房间里（浪费了田野）"
+    ]
+   },
+   "accent": "#d85f4a"
+  }
+ },
+ "candidates": {
+  "shadow": {
+   "id": "shadow",
+   "num": 3,
+   "name": "皮影戏",
+   "en": "Shadow Puppetry",
+   "line": "牛皮雕花、透光染色的皮影贴在暖黄幕布上，锣鼓一响，正侧面亮相",
+   "line_en": "Carved and dyed leather puppets pressed to a warm yellow screen, posing in profile to gongs and drums"
+  },
+  "cutout": {
+   "id": "cutout",
+   "num": 6,
+   "name": "平面剪纸动画",
+   "en": "Cut-out Animation",
+   "line": "彩纸剪的纸偶钉着铜脚钉，平铺在纸上从正上方拍，像会动的绘本",
+   "line_en": "Coloured-paper puppets with brass fasteners, laid flat and shot from above, like a picture book that moves"
+  },
+  "plasticine-flat": {
+   "id": "plasticine-flat",
+   "num": 10,
+   "name": "彩泥浮雕定格",
+   "en": "Plasticine Relief",
+   "line": "彩色橡皮泥抹开贴在平板上的浅浮雕，正面平拍，颜色浓得化不开",
+   "line_en": "Coloured plasticine smeared into a low relief on a flat board, shot straight on, colour thick as jam"
+  },
+  "miniature": {
+   "id": "miniature",
+   "num": 12,
+   "name": "微缩模型定格",
+   "en": "Miniature Model Stop-motion",
+   "line": "桌面上的微缩小镇，几十个米粒大的小人一起忙，偶尔伸进来一只真人的手",
+   "line_en": "A tabletop miniature town where dozens of rice-grain people bustle, and now and then a real hand reaches in"
+  }
+ }
+}
