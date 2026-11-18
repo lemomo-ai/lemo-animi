@@ -18,7 +18,7 @@ Play it once and ask:
 4. Full film → `contact.sh` contact sheet (8 frames, overall look).
 5. `motion_check.sh` consecutive frames: the 1–2 most intense seconds, sheet changes, occlusions.
 6. **Frame-by-frame self-review**: `"$PY" "$S/selfcheck.py" out/<name>.mp4 --style <style>` → `work/selfcheck_frames.jpg` (every 0.5 s, too-dark cells marked red) and `work/selfcheck_cuts.jpg` (before/after every cut), plus a report of too-dark time ranges. Look at every image against the list below; log each problem in the production log, fix it, run again.
-7. **Listen to the whole film**: narration mispronunciations (heteronyms, numbers), subtitles in sync with the voice, foley on the right drawing, music not drowning the narration. Stems are in `audio/stem_*.wav`.
+7. **Check the sound by measurement, never by loading audio into your input** (SKILL.md hard rule 14): narration text written as it should be read (heteronyms, numbers), subtitles in sync with the voice (`audio/subs.json`), foley on the right drawing (`sound.py times` beside the contact frames), music not drowning the narration (`sound.py check`). Stems in `audio/stem_*.wav` are for the user to listen to on the review page; mark listening "not listened" in the review.
 
 ### What a reviewer will catch
 

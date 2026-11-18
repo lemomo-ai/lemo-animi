@@ -74,7 +74,7 @@ Format: **symptom** | cause | fix.
 
 ## Sound
 
-- **Narration mispronounced** (heteronyms, numbers, foreign words) | TTS uses the common reading | rewrite `text` as it should be read, or use a synonym; listen to the whole film
+- **Narration mispronounced** (heteronyms, numbers, foreign words) | TTS uses the common reading | rewrite `text` as it should be read, or use a synonym; ask the user to listen on the review page
 - **Narration too dense** | lines back to back | 0.3–1 s between lines; silence before the twist; `sound.py lint` reports coverage
 - **Music drowns the narration** | — | ducking is automatic; if still too loud, lower that section's `energy`
 - **Foley off by a frame or two** | times estimated in seconds | compute from drawings: `ts.pic_start(<drawing>) / 24`
