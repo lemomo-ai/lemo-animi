@@ -137,7 +137,7 @@ Claude writes and runs the code, but it can't draw. The pictures come from one o
 
 ### First film
 
-The first film needs a network connection and about 1.7 GB: a Python environment (about 300 MB) and the instrument samples for the score (about 1.4 GB, resumable), both in `~/lemo-animi-env`. It's required, so it isn't a question: the agent mentions it once with its opening questions, downloads right after you answer, and starts the film only when everything is in place. If the download fails, it shows you why and waits.
+The first film needs a network connection and about 1.7 GB: a Python environment (about 300 MB) and the instrument samples for the score (about 1.4 GB, resumable), both in `~/lemo-animi-env`. It's required, so it isn't a question: the agent starts it in the background as soon as it begins, mentions it once with its opening questions, and after you answer starts the film only when everything is in place. If the download fails, it shows you why and waits.
 
 - Codex and Claude Code on the same machine share `~/lemo-animi-env`: whichever installs it first, the other doesn't download again.
 - The optional cut-out model (0.97 GB) is downloaded only if an asset can't be generated with a clean transparent edge.
@@ -176,8 +176,8 @@ The short form works too: `make with lemo-animi: <story>, <style>, <length>, <si
 
 What happens next:
 
-1. **It asks once.** Everything you didn't say, each as its own question with the default first: story (if you gave none), style, length (40 s by default, 20 s to 2 min), size (landscape / portrait / square), narration, title and end cards, a preview of the characters first, anything else. Codex shows them in one form, Claude Code in pop-ups of up to four. Answer "all defaults" if you like. If it can't tell your language, it asks that first; the first time, it also mentions the download.
-2. **First time only: it installs the environment** (see [First film](#first-film)), and starts once it's in place.
+1. **It asks once.** The first time, the environment starts downloading in the background, so there's no waiting. Everything you didn't say, each as its own question with the default first: style (every style listed), the story you want to tell (if you gave none), length (40 s by default, 20 s to 2 min), size (landscape / portrait / square), narration, title and end cards, a preview of the characters first, anything else. Codex shows them in one form, Claude Code in pop-ups of up to four. Answer "all defaults" if you like. If it can't tell your language, it asks that first; the first time, it also mentions the download in progress.
+2. **First time only: it waits for the environment** (see [First film](#first-film)), and starts once it's in place.
 3. **It makes the film without stopping**: director's plan, images, animation, sound, then its own review and fixes. You see only short progress notes. If you asked for a preview, it stops once to show the characters and main backgrounds.
 4. **It opens the review page.** Leave notes and send them, or approve ([Review and revise](#review-and-revise)).
 5. **It delivers**: the film and its files, plus a short report (what it made, the images it generated, the checks, what it isn't happy with, where the files are).

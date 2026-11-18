@@ -5,12 +5,13 @@
 ## 0. Environment (once per machine)
 
 ```sh
-sh "$S/setup.sh" check          # what is missing
+sh "$S/setup.sh" start          # first command: check; anything missing -> full install starts in the background (log ~/lemo-animi-env/setup.log)
+sh "$S/setup.sh"                # after the answers: waits for that install and finishes it (Python env ~300 MB + score instrument samples ~1.4 GB, resumable; no matting model)
+sh "$S/setup.sh" check          # what is missing (installs nothing)
 PY=$(sh "$S/setup.sh" python)   # the Python to use once the env exists
-sh "$S/setup.sh"                # Python env (~300 MB of packages) + score instrument samples (~1.4 GB, resumable); no matting model
 ```
 
-ffmpeg is required. Run `check` before the opening questions. The download is required, so it is never a question: if anything is missing, one line with the questions says what (Python env ~300 MB, instrument samples ~1.4 GB), where (`~/lemo-animi-env`) and that it starts once they answer (SKILL.md §1). Right after the answers run `sh "$S/setup.sh"`, and start the film only when `check` passes. Install only into `~/lemo-animi-env` (or the user's own `LEMO_ANIMI_HOME`); in a sandbox ask for permission to write there instead of redirecting to a temp folder. An env installed earlier by Codex or Claude Code on this machine is reused, nothing downloads again; two installs at once are safe (`setup.sh` waits for the other one). If the download fails (offline: `setup.sh` builds what it can and exits 1), show its message and stop until it completes; `sh "$S/setup.sh" instruments` resumes the samples.
+ffmpeg is required. `start` is the first command, before the opening questions. The download is required, so it is never a question: it runs in the background while the user answers, and one line with the questions says what (Python env ~300 MB, instrument samples ~1.4 GB) and where (`~/lemo-animi-env`) (SKILL.md §1). Right after the answers run `sh "$S/setup.sh"`, which waits for the background install, and start the film only when `check` passes. Install only into `~/lemo-animi-env` (or the user's own `LEMO_ANIMI_HOME`); in a sandbox ask for permission to write there instead of redirecting to a temp folder. An env installed earlier by Codex or Claude Code on this machine is reused, nothing downloads again; two installs at once are safe (`setup.sh` waits for the other one). If the download fails (offline: `setup.sh` builds what it can and exits 1), show its message and stop until it completes; `sh "$S/setup.sh" instruments` resumes the samples.
 Narration uses edge-tts and needs the network: if `sound.py vo` can't connect it stops and prints a justification; request access. If refused, drop `vo` from `sound.json`, make the film without narration and say so in the report. Never substitute a local offline voice.
 
 ## 1. Film folder
@@ -165,7 +166,7 @@ $R wait
 
 ## Tools (`scripts/`)
 
-- `setup.sh`: `check` inspects only; `python` prints the Python to use; no argument builds the Python env + downloads score instrument samples (about 1.4 GB; offline it only warns, run `setup.sh instruments` later); matting model optional (`setup.sh model`).
+- `setup.sh`: `start` checks and starts any missing install in the background; `check` inspects only; `python` prints the Python to use; no argument builds the Python env + downloads score instrument samples (about 1.4 GB; offline it only warns, run `setup.sh instruments` later); matting model optional (`setup.sh model`).
 - `animi.py`: `styles` lists styles, `prompt` builds prompts, `check` QA for sheets, `clean` removes translucent haze from transparent backgrounds, `slice` cuts cells, `anchors` finds anchors, `live` measures liveliness of a film, `stylecheck` checks style packages; library functions in `api.md`.
 - `layers.py`: foreground layers, multi-layer parallax, small environment motion (swaying plants, particles, glints). `bookends.py`: title plates and optional title/end cards (only when the user asked).
 - `sound.py`: `vo` narration, `lint` checks the sound sheet, `build` mixes and makes subtitles, `mux` muxes into video, `check` loudness / true peak / dead air of a film, `voices` lists voices, `kinds [style]` lists available foley (★ = recommended by the style), `times` lists all times resolved per shot.

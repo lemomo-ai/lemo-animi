@@ -3,6 +3,9 @@
 #
 # Usage:
 #   sh setup.sh          # check ffmpeg and Python -> make the venv and install deps -> download instrument samples -> print the Python to use (no cut-out model)
+#   sh setup.sh start    # first step of every film: check; if anything is missing, start the full install (as plain sh setup.sh)
+#                        # in the background and return at once (log: $LEMO_ANIMI_HOME/setup.log). Run plain sh setup.sh later:
+#                        # it waits for the background install, then finishes or reports what failed
 #   sh setup.sh check    # check only, install / download nothing (exit 1 if something is missing; a missing cut-out model does not count)
 #   sh setup.sh python   # only print the Python to use (exit 1 if the env is not ready); this is $PY in commands
 #   sh setup.sh model    # download the cut-out model (optional, ~0.97 GB). Assets are generated as transparent PNGs by default
@@ -27,7 +30,7 @@
 set -eu
 
 MODE="${1:-env}"
-case "$MODE" in env|all|check|python|model|instruments|image) ;; *) echo "usage: sh setup.sh [check|python|model|instruments|image|all]" >&2; exit 2 ;; esac
+case "$MODE" in env|all|start|check|python|model|instruments|image) ;; *) echo "usage: sh setup.sh [start|check|python|model|instruments|image|all]" >&2; exit 2 ;; esac
 HERE="$(cd "$(dirname "$0")" && pwd)"
 HOME_DIR="${LEMO_ANIMI_HOME:-$HOME/lemo-animi-env}"
 VENV="$HOME_DIR/venv"
@@ -156,14 +159,35 @@ if [ "$MODE" = "image" ]; then
   exit 1
 fi
 LOCK="$HOME_DIR/.setup.lock"                       # two agents installing at once would fight over the same files
+LOG="$HOME_DIR/setup.log"
+# the lock holds the installer's pid; a lock whose installer died (machine slept, app closed) is cleared
+lock_live() {
+  [ -d "$LOCK" ] || return 1
+  [ -f "$LOCK/pid" ] || return 0                   # just taken, pid not written yet
+  kill -0 "$(cat "$LOCK/pid" 2>/dev/null)" 2>/dev/null && return 0
+  rm -rf "$LOCK"; return 1
+}
+if [ "$MODE" = "start" ]; then
+  mkdir -p "$HOME_DIR"
+  if OUT=$(sh "$HERE/setup.sh" check 2>&1); then say "$OUT"; exit 0; fi
+  say "$OUT"
+  if lock_live; then say "already installing in the background (log: $LOG); later, sh setup.sh waits for it"; exit 0; fi
+  nohup sh "$HERE/setup.sh" env > "$LOG" 2>&1 < /dev/null &
+  say ""
+  say "INSTALLING IN THE BACKGROUND: Python env (~300 MB) + score instrument samples (~1.4 GB) -> $HOME_DIR (log: $LOG)."
+  say "Ask the opening questions meanwhile. After the answers run sh setup.sh: it waits for this install, then finishes or shows what failed."
+  exit 0
+fi
 if [ "$MODE" != "check" ]; then
   mkdir -p "$HOME_DIR"; n=0
   while ! mkdir "$LOCK" 2>/dev/null; do
-    [ "$n" -eq 0 ] && say "another setup.sh is installing into $HOME_DIR; waiting for it to finish ..."
+    lock_live || continue
+    [ "$n" -eq 0 ] && say "another setup.sh is installing into $HOME_DIR (log: $LOG); waiting for it to finish ..."
     n=$((n + 1)); [ "$n" -gt 1800 ] && { warn "still locked after an hour: if no setup.sh is running, remove $LOCK and rerun"; exit 1; }
     sleep 2
   done
-  trap 'rmdir "$LOCK" 2>/dev/null || true' EXIT INT TERM
+  echo $$ > "$LOCK/pid"
+  trap 'rm -rf "$LOCK"' EXIT; trap 'exit 143' INT TERM
 fi
 if [ "$MODE" = "instruments" ]; then get_instruments; [ "$INSTR_OK" -eq 1 ] || exit 1; exit 0; fi
 check_ffmpeg
