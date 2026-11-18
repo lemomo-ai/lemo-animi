@@ -598,7 +598,7 @@ def readme_card(sid, s, lang, i):
     ks = 31
     while d.textlength(f'{no}  {kind}', font=F(ks)) > cw - 2 * pad - 20 and ks > 24:
         ks -= 1
-    fs, fn = F(ks), F(round(ks * .72))
+    fs = fn = F(ks)
     base = ty + 30 + 14 + round(ks * .8)                              # title line, gap, style cap height
     d.text((tx0, base), no, font=fn, fill=acc_ink, anchor='ls')
     d.text((tx0 + d.textlength(no, font=fn) + 10, base), kind, font=fs, fill=ink, anchor='ls')
