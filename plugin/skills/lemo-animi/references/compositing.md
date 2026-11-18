@@ -42,6 +42,26 @@ Passing an object from A to B: fix one side and back-solve the other so the obje
 
 **Airborne**: slicing flattens the drawn height, so code supplies it: add `lift = height × sin(π·u)` to the ground y; the contact shadow shrinks and fades with `lift` (template `put(..., lift=)` does both).
 
+**Standing on things** (a crate, a plank, a step, a friend's hands or back: anything other than the background floor). The sole is the anchor:
+- Back-solve the foot from the surface: find the support's top face at the foot's x (on a slope, the slope line at that x) and put the foot anchor or a sole point (`ref=`) on it. The sole rests on the top face: not in front of it, not behind it, not sunk into it, not hovering.
+- When the support moves (a crate tips, a plank slides, hands lift), recompute every drawing: the foot rides with the support, same shift and rotation, until the story makes it slip.
+- Weight moves in steps: one foot lands and holds ≥ 2 drawings, then the body rises onto it; the body sits over the supporting foot. No gliding up, no rising before a foot has landed.
+- Medium-close and closer, or when the support is a character or something soft: draw the weight-bearing poses with the support in the same cell (directing.md, "Characters in contact"), never two layers pushed together.
+- Hands work the same way: a push, pull, grip or lean puts the hand on the object's edge (point alignment above).
+- The contact shadow and `lift` start at the support's top face (the crate lid, the plank, following its slope), not at the floor's ground line.
+- The support reacts: it dips or tilts when weight lands (directing.md §4, "The receiver reacts").
+- A rigid body tipping over rotates about its contact corner; compute the end angle from the cell's alpha so it ends touching the ground, not hovering above it.
+- Which support gets drawn: a static, flat support (a branch, a ledge in the background) can be an invisible support line in the sheet ("standing on an invisible horizontal branch, do not draw the branch") composited on the background's real one; a support that moves, tilts, is soft or is a character is drawn in the same cell.
+- Something set down or planted leaves the character: from that drawing it is a separate prop at a fixed place in the scene, and later cells no longer draw it in the hand.
+
+**Attached parts** (a key, hat, backpack, tool in hand, wheel, propeller, lid, a door on its hinge) belong to what they're attached to:
+- Same mount point in every cell and every sheet: never floating, never changing side, never moving into another hand unless the story hands it over.
+- A part turning about its own shaft: the prompt says what the camera sees at each angle ("full face → turned 45°, narrower → edge-on, a thin bar"). Abstract directions ("vertical → diagonal → horizontal") make the model spin it flat on the wrong axis.
+- A part placed in code pivots on its mount point (`place_at(..., ref=mount, rot=…)`), never on its centre. Effects attached to a part (exhaust, flame, sparks) anchor at it and turn with it.
+- Across sheets: a carried or worn part goes into `[character]` with the side it's on; later sheets take an already-correct sheet as a second reference. A hand holding a turning part turns with it.
+
+**Check before slicing** every sheet with contact or an attached part, cell by cell: sole on the support, hand on the object, part at its mount and at the planned angle, no second copy. A miss is regenerated with the miss named in the prompt; code can't fix a foot drawn beside the crate.
+
 ## 3½. Shadows: one kind per style
 
 Transparent assets carry no shadow (the templates forbid it). Code draws it from the style's `preset.shadow`, shadow first, then the character (one `animi.shadow(...)` line in the template's `put()`):
@@ -50,7 +70,7 @@ Transparent assets carry no shadow (the templates forbid it). Code draws it from
 |---|---|---|---|
 | `contact` (default) | Soft ellipse under the feet, smaller and fainter with height | 3D puppets (clay, felt, cloth doll, crochet) | `contact` strength, `contact_w` width (× character width, default 0.9), `contact_off` offset (share of character width) |
 | `relief` | Thin hugging shadow: silhouette offset a few px, blurred, darkened; farther and fainter off the paper | Flat styles (paper cut-out, clay relief, shadow puppets), default with `flags.top_down` | `k`, `off` (offset = min(cap, base + factor × size)), `blur`, `dir` |
-| `cast` | Hard-light diagonal shadow: silhouette squashed at the ground line, thrown across the floor | Hard lamp or sun light (cardboard, wooden puppet, tin) | `light=(kx, ky)` (a point at height h falls kx·h right, ky·h back), `cast_k`, `cast_blur` |
+| `cast` | Hard-light diagonal shadow: silhouette squashed at the ground line, thrown across the floor | Hard lamp or sun light (cardboard) | `light=(kx, ky)` (a point at height h falls kx·h right, ky·h back), `cast_k`, `cast_blur` |
 | `none` | Nothing | Floating in water or sky | |
 
 Direction follows the style's light (light from top-left, shadow to bottom-right). Pass `lift` when airborne; the shadow stays on the ground and fades. Per-element override: template `put(..., shade=dict(w=0.62, off=(0.06, 0), k=0.3))`; `shade=False` draws none.
@@ -145,7 +165,8 @@ put(frame, D, cam, name, x, y, s, pic, ts, sh=sh, light=dict(warm=0.6, warm_side
 - `decontam`: edge decontamination (semi-transparent fringes keep the generator's background colour and show a grey halo on dark scenes); on for every fuzzy-edged material.
 - `tint` / `expo` / `gamma`: darken and shift to the scene's colour temperature (night cool blue, oil lamp warm). `side`: left/right multipliers (where the light comes from).
 - `rim` / `rim_col` / `rim_dir`: rim light, the signature of fuzzy materials. Close-up sheets are several times larger than 8-action sheets, so pass `scale` for consistent rim width: the template's `put()` uses "reference sheet sc / this sheet sc" (a close-up sheet's sc is set from its size in the wide, times the shot's k); if wrong, set `lscale={'close': 2.2}` in `load()`.
-- `warm`: the side lit by a lantern or fire. For mirrored cells pass `flip=True`; light direction follows the mirrored frame. Side light **drawn into** the image flips with the mirror, so mirror only cells lit from the top or front.
+- `warm`: the side lit by a lantern or fire. For mirrored cells pass `flip=True`; light direction follows the mirrored frame. Side light **drawn into** the image flips with the mirror, so mirror only cells lit from the top or front. Mirroring also needs a design check: held prop, accessory side and markings switch sides; if that breaks continuity, generate a sheet facing the other way. Each style says in its Compositing section whether mirroring is allowed.
+- **Everything gets the scene light, not only the hero**: in styles with `preset.light`, `dark`, `light_pool` or `floor_light`, side characters, props, effects and dust go through the same light by the same position rule; all cast and contact shadows fall one way for the whole film.
 - `floor_light`: measures the light zone along the ground line from the background itself and multiplies each character column by position (zone edge `floor.lo`, `floor.gamma`); `light_pool`: a light pool (flashlight, spotlight, iris closing), background and character multiplied by the same map. When closing the pool, centre it on the light-source side and keep the hero lit; lamps don't flicker either (it makes the frame flicker).
 - **Darken the whole scene** (lights out, clouds): SHOTS `dark=0.6` (or `dict(k=, tint=)`); the template darkens background and characters together at the end of `render()` (`animi.darken`, cool bias); to brighten back, ease k to 1 per drawing.
 - **Additive warm light** (lantern, candle, window, firefly): `animi.warm_glow(frame, X, Y, r, k)` adds a Gaussian warm glow + faint halo at the source, after darkening (not darkened); find the source with `part_center` on the lamp and map with `to_frame`. No flame flicker.

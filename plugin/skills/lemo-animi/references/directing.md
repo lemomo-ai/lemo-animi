@@ -82,7 +82,7 @@ Rules:
 
 - **Anticipation**: crouch before a jump, swing back before a throw. At least 1 drawing, held 2–4 frames.
 - **Action**: fast, one drawing each.
-- **Follow-through and settle**: squash on landing, tail wags twice, hat bounces. Draw it if possible; code adds decaying oscillation (`amp × exp(−k/τ) × sin(ωk)`).
+- **Follow-through and settle**: squash on landing, tail wags twice, hat bounces. Draw it if possible; code adds decaying oscillation (`amp × exp(−k/τ) × sin(ωk)`) to dangling parts and soft materials only: on a rigid body that reads as rocking, so it tilts one way and holds.
 - **The receiver reacts**: what gets hit shakes, what gets landed on sinks then wobbles, what gets startled jumps.
 - Cartoon squash and stretch: draw it fully; code adds only ±4–7%.
 - **Hero inside a prop** (riding a rocket, climbing into a box, driving): give them their own in-and-out acting (squeeze in, get stuck, poke the head out, pop out, tumble out and get up); otherwise the prop does all the moving and the hero is just a face.
@@ -115,15 +115,16 @@ One distinct action = one 8-cell sheet; never mix two actions in one sheet. How 
 
 **Prop-as-actor scenes** (rocket launch, wick burning down, door opening by itself) need no action sheet: rigid animation (move, rotate, shake) + a prop image of that prop (several states) + fx sheet (exhaust, smoke, flame). "One sheet per action" counts only character actions; each prop state gets a prop image, each effect an fx sheet.
 
-**Fix facing and path before generating sheets**: for every shot state which way the hero faces and where they go ("facing right, from bottom left to the front door on the right"). All sheets of one scene share the facing (write "facing right" in the action); carried or held things are on the same side; cuts never flip facing. Make the story's verbs happen fully on screen: a jump has visible air, "going home" reaches the door, no walking on the spot.
+**Fix facing and path before generating sheets**: for every shot state the camera height, which way the hero faces and where they go ("eye level; facing right, from bottom left to the front door on the right"). All sheets of one scene share the facing (write "facing right" in the action); carried or held things are on the same side; cuts never flip facing. Make the story's verbs happen fully on screen: a jump has visible air, "going home" reaches the door, no walking on the spot.
 
 **Draw the payoff into the artwork**: the final moment (an apple stuck on the spines, a pancake landing on a plate) is what the audience remembers; give it a close shot and generate artwork with the character and the object together. A separate prop pasted on by code doesn't read as "stuck on" or "inside". The object's path from A to B stays continuous across cuts: it can't be back at the start after a cut.
 
-**Characters in contact** (sharing a scarf, hiding behind the hero, sitting on a lily pad): draw them in the same cell of one sheet, never two layers pushed together. References: every character sheet involved plus the prop image; `[action]` says "in every cell the two characters are touching, joined as one unit" and states who is left, who is right and their height ratio. `check` and `slice` with `--group grid`.
+**Characters in contact** (sharing a scarf, hiding behind the hero, sitting on a lily pad, standing in a friend's hands): draw them in the same cell of one sheet, never two layers pushed together. References: every character sheet involved plus the prop image; `[action]` says "in every cell the two characters are touching, joined as one unit" and states who is left, who is right and their height ratio. `check` and `slice` with `--group grid`.
 
 ## 7. Self-check the director's plan
 
 - [ ] Events: a new event every 1–1.5 s; a twist and a payoff; someone or something to interact with
+- [ ] Contact beats listed: every moment a character stands, steps, sits or climbs on something other than the floor, or holds, pushes or turns a part; each has its support drawn in the same cell at medium-close and closer, and a still planned to check it
 - [ ] Story: the skeleton for the length, every part with its seconds, each caused by the one before; want set up first, answered by the payoff
 - [ ] Narration (if any): at most 60% of the story time (per 30 s about zh 60–90 characters / en 40–55 words, 4–6 lines), not repeating the picture; the twist and one more 2 s+ stretch without narration. With or without narration: every beat and every feeling reads without words
 - [ ] Shot list: every cut has a reason (new place / close-up detail / new view for a reaction); no size-only cut in the same place and view; with narration every line falls in a shot; every camera has its own background; one set per place, other views generated with the main background as reference

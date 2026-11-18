@@ -45,6 +45,11 @@ Part files use the same `[name]` headers as slot files. `{aspect}` comes from `-
 
 ## Writing good slots
 
+**Every slot**
+- Every noun may be drawn. No examples or lists ("pot, bowl, jar") in `[prop]`, `[fx]` or `[scene]`: name only what this image contains, and end with "draw only the items above".
+- Gradual changes are numbers per cell ("leans 6° → 15° → 25°", "stretched to 1.5× → 2×"); turns are the silhouette the camera sees ("full face → narrower → edge-on"), never "vertical → horizontal". Vague progressions come back as identical cells or turned on the wrong axis.
+- Every asset in a shot is drawn from that shot's camera height (eye level, slightly above, about 45° above, top-down). A shot from another height gets its own sheet; a reference image passes on its viewpoint, so never reference an image from another camera height.
+
 **Character**
 - Describe looks, not personality: build, colours, clothes, accessories, one or two memorable features. For supporting characters give the size ratio to the hero ("twice the hero's height").
 - Every sheet's `[character]` is copied verbatim from the character sheet's.
@@ -63,6 +68,7 @@ Part files use the same `[name]` headers as slot files. `{aspect}` comes from `-
 
 **Effects**
 - Describe 8 stages of the effect in this material from appearance to disappearance ("a clay splash: 1 a small blob just thrown up … 8 the last drops falling"). End with "draw only what is described above; no extra stars, pompoms or threads": material lists in the style package ("sparkles are small yellow stars") get drawn as content otherwise.
+- Smoke, breath, snow, spray, thin wings: "completely opaque <material>". See-through comes from alpha in compositing (about ×0.9); asked for directly, the model draws haze that won't cut out.
 - For particles (snow clumps, petals, confetti): "8 fully opaque X, each a different size and shape, from pea to walnut size"; the slices are used directly as particles.
 - Transitions are also made from fx sheets (style.json `transitions` says what is needed).
 
@@ -73,7 +79,9 @@ Part files use the same `[name]` headers as slot files. `{aspect}` comes from `-
 - `[margin]`: where the hero stands ("a flat patch of floor in front of the stove, left of centre").
 - Same place, new shot size or camera position: **use the place's main background as reference** and write "this is exactly the place in the reference image; the floor, the big tree and the rock are all still there; the camera moves to … (diagonally from front-right, turned about 40 degrees / crouched at ground level), not the same composition as the reference", describing objects in `[scene]` the same way as in the wide. Compare it side by side with the main background: floor colour and landmarks must match and the composition must clearly differ; if the composition is nearly the same, increase the camera change and regenerate, or the cut is a jump cut. State changes (day / night, door shut / open): generate one version, then use it as reference for the other with "exactly the same picture, only change …" (here the same composition is the point). For relit pairs, the first version says "no light source"; the second "only change the lighting: warm yellow light from an unseen small lamp on the left (do not draw the lamp)".
 - Fully dark shots: `[scene]` says "nothing lit at all (no windows, lamps, stars, moon)" — a fixed style sentence like "keep one or two warm lights" can't be negated from a slot.
-- Where code will hang things or place a sun or moon: "bare twig tips with nothing hanging on them", "no sun, no clouds, nothing round in the sky".
+- List everything code will composite into the shot (characters, props, plants, fish, bubbles, lamps, a sun or moon) and end `[scene]` with "no <each of them>"; where code attaches something, describe the bare attachment point ("bare twig tips with nothing hanging on them", "no sun, no clouds, nothing round in the sky"). The background otherwise draws them too, and the composited copy doubles them.
+- The hero's colour appears nowhere in the sets: each `[scene]` says "no <hero colour> in …", and the ground the hero stands on contrasts with its body. A hero whose material matches the ground gets dark or saturated accents (ear tips, a scarf).
+- Medium-close backgrounds name one surface in focus, say everything behind it blurs into patches of colour, and list the set objects that must not appear.
 - For parallax with a separately composited foreground, the background's nearest foreground is only a thin strip along the bottom.
 - Wide pans need extra-wide backgrounds: generate two that join left-right, or pan only slightly over one 16:9.
 

@@ -22,13 +22,13 @@
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/bobo-pancake.mp4"><img src="docs/media/clay.webp" alt="波波的煎饼" width="100%"></a><br>
 <b>黏土定格</b> · <code>clay</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/bobo-pancake.mp4">▶ 看片 <b>《波波的煎饼》</b></a> · 45 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/bobo-pancake.mp4">▶ 看片 <b>《波波的煎饼》</b></a> · 53 秒<br>
 <sub>油性黏土捏的角色和布景，表情夸张、压扁拉长，最有喜感</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-whale.mp4"><img src="docs/media/papercraft.webp" alt="会游泳的灯塔" width="100%"></a><br>
 <b>纸艺立体定格</b> · <code>papercraft</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-whale.mp4">▶ 看片 <b>《会游泳的灯塔》</b></a> · 48.5 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-whale.mp4">▶ 看片 <b>《会游泳的灯塔》</b></a> · 57 秒<br>
 <sub>卡纸剪刻折叠的纸雕灯箱，一层层前后排开，逆光透亮，安静又梦幻</sub>
 </td>
 </tr>
@@ -36,13 +36,13 @@
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dudu-windup.mp4"><img src="docs/media/tin.webp" alt="嘟嘟的发条" width="100%"></a><br>
 <b>铁皮玩具定格</b> · <code>tin</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dudu-windup.mp4">▶ 看片 <b>《嘟嘟的发条》</b></a> · 47 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dudu-windup.mp4">▶ 看片 <b>《嘟嘟的发条》</b></a> · 55 秒<br>
 <sub>印花铁皮冲压的复古发条玩具，一顿一顿地动；上紧发条就活，发条松了就停</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-snow.mp4"><img src="docs/media/felt.webp" alt="雪夜的小灯" width="100%"></a><br>
 <b>羊毛毡定格</b> · <code>felt</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-snow.mp4">▶ 看片 <b>《雪夜的小灯》</b></a> · 48.5 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-snow.mp4">▶ 看片 <b>《雪夜的小灯》</b></a> · 57 秒<br>
 <sub>戳戳乐羊毛毡做的小动物和雪景，毛茸茸、安静、温暖，冷蓝夜色里点一盏暖灯</sub>
 </td>
 </tr>
@@ -50,13 +50,13 @@
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/box-moon.mp4"><img src="docs/media/cardboard.webp" alt="纸箱登月" width="100%"></a><br>
 <b>纸板箱定格</b> · <code>cardboard</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/box-moon.mp4">▶ 看片 <b>《纸箱登月》</b></a> · 50 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/box-moon.mp4">▶ 看片 <b>《纸箱登月》</b></a> · 58 秒<br>
 <sub>快递箱、胶带和马克笔搭出来的小孩想象世界，做得有点歪，一本正经地搞笑</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lamp-bear.mp4"><img src="docs/media/wood.webp" alt="灯下" width="100%"></a><br>
 <b>木偶定格</b> · <code>wood</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lamp-bear.mp4">▶ 看片 <b>《灯下》</b></a> · 47 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lamp-bear.mp4">▶ 看片 <b>《灯下》</b></a> · 55 秒<br>
 <sub>清漆木雕的关节木偶，深夜一盏油灯下，一个关节一个关节地活过来</sub>
 </td>
 </tr>
@@ -64,13 +64,13 @@
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/pupu-puff.mp4"><img src="docs/media/crochet.webp" alt="噗噗鼓起来" width="100%"></a><br>
 <b>钩织玩偶定格</b> · <code>crochet</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/pupu-puff.mp4">▶ 看片 <b>《噗噗鼓起来》</b></a> · 49.8 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/pupu-puff.mp4">▶ 看片 <b>《噗噗鼓起来》</b></a> · 58 秒<br>
 <sub>毛线一针针钩出来的玩偶和满屏小世界，糖果色、热闹、到处都在轻轻动</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dou-shortcut.mp4"><img src="docs/media/fabric.webp" alt="豆豆抄近路" width="100%"></a><br>
 <b>布偶拼布定格</b> · <code>fabric</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dou-shortcut.mp4">▶ 看片 <b>《豆豆抄近路》</b></a> · 49.6 秒<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dou-shortcut.mp4">▶ 看片 <b>《豆豆抄近路》</b></a> · 58 秒<br>
 <sub>花布、纽扣和针脚缝出来的布偶和田园，暖阳下走一段路，柔软又有乡土味</sub>
 </td>
 </tr>
@@ -92,7 +92,7 @@
 5. **配声音。** 用真实乐器采样写的原创配乐，每个接触都有拟音；需要的话加旁白和字幕。
 6. **你来审。** 本地审片台：停在哪一刻就在哪写意见，它逐条改完给你看新版，直到你点通过。见[审片和修改](#审片和修改)。
 
-| 片长 | 镜头 | 生图张数 |
+| 成片片长 | 镜头 | 生图张数 |
 |---|---|---|
 | 20 秒 | 2–4 | 约 10–14 |
 | 40 秒（默认） | 5–8 | 约 20–26 |
@@ -101,7 +101,7 @@
 
 ## 安装
 
-**要先有**：macOS 或 Linux，装好 `ffmpeg` 和 `ffprobe`（macOS：`brew install ffmpeg`）；Python 3.11–3.13 或 [uv](https://docs.astral.sh/uv/)；第一次用时要联网。
+**要先有**：macOS 或 Linux，装好 `ffmpeg`（macOS：`brew install ffmpeg`），以及 Python 3.11–3.13 或 [uv](https://docs.astral.sh/uv/)。
 
 ### Codex
 
@@ -135,7 +135,7 @@ Claude 负责写代码、跑代码，但它自己不会画图。图从下面两�
 
 ### 第一次做片
 
-第一次让它做片时，它会先检查 ffmpeg 和 Python，再告诉你要下载什么：Python 运行环境（约 300 MB，放在 `~/lemo-animi-env`）和配乐用的乐器采样（约 1.4 GB，可断点续传）。问过你才开始。
+第一次让它做片时要联网：它会告诉你要下载什么，Python 运行环境（约 300 MB，放在 `~/lemo-animi-env`）和配乐用的乐器采样（约 1.4 GB，可断点续传），问过你才开始。
 
 - 不联网时，只要能连上 PyPI，照样能建好运行环境，乐器采样之后再补。
 - 可选的抠图模型（0.97 GB）只有某张素材生不出干净的透明边时才会下载。

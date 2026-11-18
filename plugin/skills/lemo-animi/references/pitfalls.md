@@ -37,6 +37,8 @@ Format: **symptom** | cause | fix.
 ## Compositing
 
 - **Character floats** | placed by cell bottom | place by the anchor's ground line
+- **Hero doesn't look like it's standing on the crate / plank / hands** | placed on the floor's ground line, or support and hero moved separately | back-solve the sole from the support's top face every drawing; draw weight-bearing poses with the support in the same cell (compositing.md §3)
+- **Key, hat or tool drifts or spins on the wrong axis** | each cell drawn freely; abstract rotation words | same mount point in every cell; describe each angle as the camera sees it; check every cell before slicing (compositing.md §3)
 - **Character changes size between sheets** | each sheet scaled by its own median | `A.scale_ref(HERO_H, <standing cell>)`
 - **Cell swaps are obvious** | swapped while still | swap during fast motion, or hide in a cut or occlusion
 - **Pasted things break occlusion** | missing foreground layer | cover with the front-edge occlusion layer (compositing.md §4)

@@ -22,13 +22,13 @@ Tell your agent a story in one sentence. lemo-animi writes the story and the sho
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/bobo-pancake.mp4"><img src="docs/media/clay.webp" alt="Bobo&#x27;s Pancake" width="100%"></a><br>
 <b>Clay Stop-motion</b> · <code>clay</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/bobo-pancake.mp4">▶ Watch <b>Bobo&#x27;s Pancake</b></a> · 45 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/bobo-pancake.mp4">▶ Watch <b>Bobo&#x27;s Pancake</b></a> · 53 s<br>
 <sub>Oil-clay characters and sets with big squash-and-stretch faces; the funniest of the lot</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-whale.mp4"><img src="docs/media/papercraft.webp" alt="The Swimming Lighthouse" width="100%"></a><br>
 <b>Papercraft Stop-motion</b> · <code>papercraft</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-whale.mp4">▶ Watch <b>The Swimming Lighthouse</b></a> · 48.5 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-whale.mp4">▶ Watch <b>The Swimming Lighthouse</b></a> · 57 s<br>
 <sub>Cut, scored and folded card in layered lightbox scenes, backlit and glowing, quiet and dreamy</sub>
 </td>
 </tr>
@@ -36,13 +36,13 @@ Tell your agent a story in one sentence. lemo-animi writes the story and the sho
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dudu-windup.mp4"><img src="docs/media/tin.webp" alt="Dudu&#x27;s Wind-up Key" width="100%"></a><br>
 <b>Tin Toy Stop-motion</b> · <code>tin</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dudu-windup.mp4">▶ Watch <b>Dudu&#x27;s Wind-up Key</b></a> · 47 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dudu-windup.mp4">▶ Watch <b>Dudu&#x27;s Wind-up Key</b></a> · 55 s<br>
 <sub>Printed tin wind-up toys from another age, moving in little jerks: wound up they live, run down they stop</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-snow.mp4"><img src="docs/media/felt.webp" alt="A Lamp on a Snowy Night" width="100%"></a><br>
 <b>Needle-felt Stop-motion</b> · <code>felt</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-snow.mp4">▶ Watch <b>A Lamp on a Snowy Night</b></a> · 48.5 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lantern-snow.mp4">▶ Watch <b>A Lamp on a Snowy Night</b></a> · 57 s<br>
 <sub>Needle-felted animals in the snow: fuzzy, quiet and warm, one warm lamp in a cold blue night</sub>
 </td>
 </tr>
@@ -50,13 +50,13 @@ Tell your agent a story in one sentence. lemo-animi writes the story and the sho
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/box-moon.mp4"><img src="docs/media/cardboard.webp" alt="Cardboard Moon Landing" width="100%"></a><br>
 <b>Cardboard Stop-motion</b> · <code>cardboard</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/box-moon.mp4">▶ Watch <b>Cardboard Moon Landing</b></a> · 50 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/box-moon.mp4">▶ Watch <b>Cardboard Moon Landing</b></a> · 58 s<br>
 <sub>A kid&#x27;s imagined world built from shipping boxes, tape and markers, a little crooked and played completely straight</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lamp-bear.mp4"><img src="docs/media/wood.webp" alt="Under the Lamp" width="100%"></a><br>
 <b>Wooden Puppet Stop-motion</b> · <code>wood</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lamp-bear.mp4">▶ Watch <b>Under the Lamp</b></a> · 47 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/lamp-bear.mp4">▶ Watch <b>Under the Lamp</b></a> · 55 s<br>
 <sub>Varnished, jointed wooden puppets coming to life one joint at a time under an oil lamp late at night</sub>
 </td>
 </tr>
@@ -64,13 +64,13 @@ Tell your agent a story in one sentence. lemo-animi writes the story and the sho
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/pupu-puff.mp4"><img src="docs/media/crochet.webp" alt="Puff Up, Pupu!" width="100%"></a><br>
 <b>Crochet Stop-motion</b> · <code>crochet</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/pupu-puff.mp4">▶ Watch <b>Puff Up, Pupu!</b></a> · 49.8 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/pupu-puff.mp4">▶ Watch <b>Puff Up, Pupu!</b></a> · 58 s<br>
 <sub>Yarn dolls and a whole small world hooked stitch by stitch: candy colours, busy, everything gently moving</sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dou-shortcut.mp4"><img src="docs/media/fabric.webp" alt="Dou Takes the Shortcut" width="100%"></a><br>
 <b>Patchwork Fabric Stop-motion</b> · <code>fabric</code><br>
-<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dou-shortcut.mp4">▶ Watch <b>Dou Takes the Shortcut</b></a> · 49.6 s<br>
+<a href="https://github.com/lemomo-ai/lemo-animi/releases/download/films/dou-shortcut.mp4">▶ Watch <b>Dou Takes the Shortcut</b></a> · 58 s<br>
 <sub>Rag dolls and countryside sewn from floral cloth, buttons and stitches; a walk in warm sun, soft and homely</sub>
 </td>
 </tr>
@@ -92,7 +92,7 @@ Every sample film was made by the skill on its own, from one sentence (Chinese n
 5. **It adds sound.** An original score from real instrument samples, foley on every contact, and optional narration and subtitles.
 6. **You review.** A local review page: pause on any moment and write a note; it fixes every note and shows you the next version until you approve. See [Review and revise](#review-and-revise).
 
-| Length | Shots | Generated images |
+| Film length | Shots | Generated images |
 |---|---|---|
 | 20 s | 2–4 | ~10–14 |
 | 40 s (default) | 5–8 | ~20–26 |
@@ -101,7 +101,7 @@ Every sample film was made by the skill on its own, from one sentence (Chinese n
 
 ## Install
 
-**You need** macOS or Linux with `ffmpeg` and `ffprobe` (macOS: `brew install ffmpeg`), Python 3.11–3.13 or [uv](https://docs.astral.sh/uv/), and a network connection the first time.
+**You need** macOS or Linux, `ffmpeg` (macOS: `brew install ffmpeg`), and Python 3.11–3.13 or [uv](https://docs.astral.sh/uv/).
 
 ### Codex
 
@@ -135,7 +135,7 @@ Claude writes and runs the code, but it can't draw. The pictures come from one o
 
 ### First film
 
-The first time you ask for a film, it checks ffmpeg and Python and tells you what it needs to download: a Python environment (about 300 MB, in `~/lemo-animi-env`) and the instrument samples for the score (about 1.4 GB, resumable). It asks before it starts.
+The first time you ask for a film, it needs a network connection: it tells you what it will download, a Python environment (about 300 MB, in `~/lemo-animi-env`) and the instrument samples for the score (about 1.4 GB, resumable), and asks before it starts.
 
 - Offline, it can still build the environment if PyPI is reachable, and fetches the samples later.
 - The optional cut-out model (0.97 GB) is downloaded only if an asset can't be generated with a clean transparent edge.

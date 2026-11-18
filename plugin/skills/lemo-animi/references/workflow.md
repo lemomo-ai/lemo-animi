@@ -90,6 +90,8 @@ lint and board work without assets: storyboard first, swap in real assets later 
 
 Check FAIL: look at the QA image and the handling table in `references/quality.md`; if it's one of the cases above, rerun with the matching flag, no regeneration. Only real defects (missing cells, merged figures, wrong proportions) get one slot-file change (clearer pose, wider gaps) and a regeneration, at most 3 times; then split into two 4-cell sheets.
 
+**Check every cell against the plan before slicing** (a passing `check` only means the cells cut cleanly): open the sheet full size and compare each cell with its line in `[action]`: pose, facing, which hand holds what, feet on the support it stands on, attached parts present once and at their mount, no extra parts or symbols. Any miss: regenerate with the miss named in the slot ("cell 3: the key is missing; it stays on the back"). A wrong drawing is never fixed in compositing.
+
 ## 5. Compositing: swap in real assets
 
 `tools/film.py` exists since §3′. Edit the remaining two places: `load()` (per shot: background, cells and anchors, set layers, environment sprites) and `render()` (what each drawing shows: layers, side characters, environment, fx). See `references/compositing.md`. `draw()` and `post()` assemble transitions, grading and subtitles; normally leave them alone.

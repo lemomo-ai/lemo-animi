@@ -9,6 +9,7 @@ Writes (all under docs/):
     media/<id>.webp        poster still (styles/<id>/poster.jpg, or a frame of the sample film), <= 150 KB
     media/<id>.mp4         ~6 s muted seamless loop from the middle of the latest sample film, 640 px, <= 900 KB
     media/manifest.json    what each media file was cut from (so re-runs skip unchanged ones)
+    content.json           styles.<id>.film.seconds refreshed from the released files (ffprobe, whole seconds), when --films is given
     index.html, zh/index.html                     the gallery (English, Chinese)
     ../README.md, ../README.zh-CN.md              only the style table between the styles:start / styles:end markers
 
@@ -58,6 +59,32 @@ README = DOCS / 'readme'
 
 CONTENT = json.loads((DOCS / 'content.json').read_text(encoding='utf-8'))
 e = html.escape
+
+
+def hd(text):
+    """Escape a heading or label and keep its hyphenated words whole ("Wind-up", "Stop-motion"): a line never breaks
+    at the hyphen. Paired with .nb { white-space: nowrap } in site.css."""
+    return re.sub(r'\S+-\S+', lambda m: f'<span class="nb">{m.group(0)}</span>', e(text))
+
+
+def film_seconds(films):
+    """The length the viewer gets: each released film's real duration (title and end cards included), whole seconds,
+    written back to content.json so builds without the films, and the READMEs, show the same number."""
+    if not films:
+        return
+    changed = []
+    for sid in PUBLISHED:
+        film = latest_film(films, sid)
+        if not film:
+            continue
+        f = CONTENT['styles'][sid]['film']
+        secs = round(duration(film))
+        if f.get('seconds') != secs:
+            changed.append(f'{sid} {f.get("seconds")} -> {secs}')
+            f['seconds'] = secs
+    if changed:
+        (DOCS / 'content.json').write_text(json.dumps(CONTENT, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+        print('  content.json: film seconds ' + ', '.join(changed))
 
 # --------------------------------------------------------------------------------------------- styles
 
@@ -354,9 +381,9 @@ def film_block(sid, s, i, lang, pre, man, cast):
     return f'''<article class="film" id="{sid}" style="--accent:{c['accent']}">
   <div class="frame"><div class="screen">{screen}<span class="tag">{e(t['loop'])}</span></div></div>
   <div>
-    <div class="meta"><span class="no">{i:02d}</span><span class="kind">{e(name)}</span><span class="rule"></span></div>
+    <div class="meta"><span class="no">{i:02d}</span><span class="kind">{hd(name)}</span><span class="rule"></span></div>
     <div class="who">{f'<span class="mini" data-turn tabindex="-1">{mini}</span>' if mini else ''}<div>
-      <h3>{e(title)}</h3><div class="len num">{f['seconds']:g} {e(t['seconds'])}</div></div></div>
+      <h3>{hd(title)}</h3><div class="len num">{f['seconds']:g} {e(t['seconds'])}</div></div></div>
     <p class="story">{e(f['story'][lang])}</p>
     <div class="row"><a class="btn primary" href="{CONTENT['films_url'] + f['file']}">{PLAY_ICON}{e(t['films_watch'])}</a>
       <span class="say-id">{e(t['say'])} <code>{sid}</code></span></div>
@@ -374,7 +401,7 @@ def page(styles, lang, man, cast):
     nav, mail = t['nav'], CONTENT['contact']
     actors = '\n'.join(
         f'<a class="actor" href="#{sid}" data-turn><span class="pup">{sprite(sid, pre, cast)}</span>'
-        f'<span class="label"><b>{e(style_text(styles[sid], lang)[0].replace(" Stop-motion", "").replace("定格", ""))}</b><span>{sid}</span></span></a>'
+        f'<span class="label"><b>{hd(style_text(styles[sid], lang)[0].replace(" Stop-motion", "").replace("定格", ""))}</b><span>{sid}</span></span></a>'
         for sid in PUBLISHED)
     films = '\n'.join(film_block(sid, styles[sid], i + 1, lang, pre, man, cast) for i, sid in enumerate(PUBLISHED))
     pr = cast.get('process') or {}
@@ -387,8 +414,8 @@ def page(styles, lang, man, cast):
         f'<span class="actor2" style="--cell:{cell[0]}/{cell[1]};background-image:url({pre}media/process/toss.webp)"></span>'
         f'<span class="rec">{e(t["live"])}</span></div>',
     ]
-    proc = ''.join(f'<figure>{img}<figcaption><b>{e(a)}</b>{e(b)}</figcaption></figure>' for img, (a, b) in zip(proc_imgs, t['proc']))
-    steps = ''.join(f'<li><b>{e(a)}</b><span>{e(b)}</span></li>' for a, b in t['how'])
+    proc = ''.join(f'<figure>{img}<figcaption><b>{hd(a)}</b>{e(b)}</figcaption></figure>' for img, (a, b) in zip(proc_imgs, t['proc']))
+    steps = ''.join(f'<li><b>{hd(a)}</b><span>{e(b)}</span></li>' for a, b in t['how'])
     lens_h = ''.join(f'<th>{e(x)}</th>' for x in t['len_h'])
     lens = ''.join(f'<tr{" class=def" if i == 1 else ""}>' + ''.join(f'<td>{e(x)}</td>' for x in row) + '</tr>' for i, row in enumerate(t['lens']))
     cmds = ''
@@ -397,13 +424,13 @@ def page(styles, lang, man, cast):
         codes = ''.join(f'<div class="code"><div class="code-h"><span class="who">{e(w)}</span>'
                         f'<button class="btn sm quiet copy" type="button" data-done="{e(t["copied"])}">{COPY_ICON}<span>{e(t["copy"])}</span></button></div>'
                         f'<pre class="cmd">{e(cmd)}</pre></div>' for w, cmd in block)
-        cmds += f'<li><div class="h">{e(h)}</div>{codes}{f"<div class=p>{e(p)}</div>" if p else ""}</li>'
+        cmds += f'<li><div class="h">{hd(h)}</div>{codes}{f"<div class=p>{e(p)}</div>" if p else ""}</li>'
     wip = ''.join(
         f'<figure><div class="frame sm"><div class="screen"><img src="{pre}media/{sid}.webp" alt="" loading="lazy"><span class="tag">{e(t["wip_badge"])}</span></div></div>'
-        f'<figcaption><b>{e(style_text(styles[sid], lang)[0])}</b>{e(style_text(styles[sid], lang)[1])}</figcaption></figure>'
+        f'<figcaption><b>{hd(style_text(styles[sid], lang)[0])}</b>{e(style_text(styles[sid], lang)[1])}</figcaption></figure>'
         for sid in CANDIDATES if sid in styles and (MEDIA / f'{sid}.webp').exists())
     more = ''.join(f'<a href="{u}"><b>{e(n)}</b><span>{e(d)}</span></a>' for n, u, d in t['more'])
-    rpts = ''.join(f'<li><span class="pin"><i>{i + 1}</i></span><div><b>{e(a)}</b><span>{e(b)}</span></div></li>' for i, (a, b) in enumerate(t['review_pts']))
+    rpts = ''.join(f'<li><span class="pin"><i>{i + 1}</i></span><div><b>{hd(a)}</b><span>{e(b)}</span></div></li>' for i, (a, b) in enumerate(t['review_pts']))
     rshot = f"{pre}readme/review{'' if lang == 'en' else '-zh'}.webp"
     return f'''<!doctype html>
 <html lang="{'en' if lang == 'en' else 'zh-CN'}">
@@ -433,9 +460,9 @@ def page(styles, lang, man, cast):
 <main id="top">
 <div class="hero"><div class="wrap">
   <div class="tape flat">{e(t['kicker'])}</div>
-  <h1>{e(t['h1'])}</h1>
+  <h1>{hd(t['h1'])}</h1>
   <p class="lede">{e(t['lede'])}</p>
-  <div class="say"><b>{e(t['you_say'])}</b><q>{e(t['ask'])}</q></div>
+  <div class="say"><b>{e(t['you_say'])}</b><q>{hd(t['ask'])}</q></div>
   <div class="cta"><a class="btn lg primary" href="#films">{PLAY_ICON}{e(t['cta_films'])}</a><a class="btn lg" href="#install">{e(t['cta_install'])}</a></div>
 </div>
 <div class="shelf" aria-label="{e(t['cast_h'])}"><div class="cast">
@@ -445,43 +472,43 @@ def page(styles, lang, man, cast):
 </div>
 
 <section id="films"><div class="wrap">
-  <div class="sec-head"><div class="tape">{e(t['styles_h'])}</div><h2>{e(t['films_h'])}</h2>
+  <div class="sec-head"><div class="tape">{e(t['styles_h'])}</div><h2>{hd(t['films_h'])}</h2>
     <p class="lede">{e(t['films_p'])} {e(t['styles_p'])}</p><p class="note">{e(t['loop_note'])}</p></div>
 {films}
 </div></section>
 
 <section id="how"><div class="wrap">
   <div class="tape">{e(t['how_h'])}</div>
-  <h2>{e(t['proc_h'])}</h2>
+  <h2>{hd(t['proc_h'])}</h2>
   <p class="lede">{e(t['proc_p'])}</p>
   <div class="proc">{proc}</div>
-  <h2 class="sm" style="margin-top:clamp(64px,8vw,104px)">{e(t['steps_h'])}</h2>
+  <h2 class="sm" style="margin-top:clamp(64px,8vw,104px)">{hd(t['steps_h'])}</h2>
   <ol class="xsheet">{steps}</ol>
   <div class="tablewrap"><table class="lens num"><thead><tr>{lens_h}</tr></thead><tbody>{lens}</tbody></table></div>
 </div></section>
 
 <section id="review"><div class="wrap">
   <div class="tape">{e(t['review_eyebrow'])}</div>
-  <h2>{e(t['review_h'])}</h2>
+  <h2>{hd(t['review_h'])}</h2>
   <p class="lede">{e(t['review_p'])}</p>
   <div class="rv">
     <figure class="desk"><img src="{rshot}" alt="{e(t['review_alt'])}" width="1600" height="960" loading="lazy"></figure>
     <div class="rv-side">
       <ol class="rv-pts">{rpts}</ol>
-      <div class="rv-wait"><span class="pill ok live">{e(t['review_pill'])}</span><b>{e(t['review_wait_h'])}</b><p>{e(t['review_wait'])}</p></div>
+      <div class="rv-wait"><span class="pill ok live">{e(t['review_pill'])}</span><b>{hd(t['review_wait_h'])}</b><p>{e(t['review_wait'])}</p></div>
     </div>
   </div>
 </div></section>
 
 <section id="install"><div class="wrap inst">
-  <div><div class="tape">{e(t['install_h'])}</div><h2>{e(t['install_h'])}</h2>
+  <div><div class="tape">{e(t['install_h'])}</div><h2>{hd(t['install_h'])}</h2>
     <p class="lede">{e(t['install_p'])}</p><p class="need">{e(t['need'])}</p><p class="need model">{e(t['model'])}</p>
     <p class="need"><a href="{install}">{e(t['install_link'])}</a> · <a href="{skill}">{e(t['skill'])}</a></p></div>
   <ol class="cmds">{cmds}</ol>
 </div></section>
 
 <section id="in-progress"><div class="wrap">
-  <div class="tape">{e(t['wip_badge'])}</div><h2 class="sm">{e(t['wip_h'])}</h2>
+  <div class="tape">{e(t['wip_badge'])}</div><h2 class="sm">{hd(t['wip_h'])}</h2>
   <p class="lede">{e(t['wip_p'])}</p>
   <div class="wip">{wip}</div>
 </div></section>
@@ -598,6 +625,7 @@ def main():
             sys.exit(f'{tool} not found')
     styles = load_styles()
     films = Path(a.films) if a.films else Path('/nonexistent')
+    film_seconds(films if films.is_dir() else None)
     print(f'media  (films: {films if films.is_dir() else "not found, keeping existing media"})')
     man = build_media(styles, films if films.is_dir() else None, a.force)
     FILMS_DIR = films if films.is_dir() else None

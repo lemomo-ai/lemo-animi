@@ -76,6 +76,12 @@ Scale (px): `--t-xs 12` · `--t-sm 13` · `--t-md 15` · `--t-lg 17` · `--t-xl 
 `clamp(46px, 8vw, 108px)` (gallery h1), `clamp(32px, 4.4vw, 52px)` (h2), `clamp(26px, 3.2vw, 38px)` (`h2.sm`).
 Body is 17/1.65 on the gallery and 15/1.6 on the review page. Numbers that line up use `.num` (tabular figures).
 
+Line breaks: headings are `text-wrap: balance`, paragraphs, list items and captions `text-wrap: pretty` (no one-word
+last lines). A hyphenated word never breaks at its hyphen: `build.py`'s `hd()` wraps it in `<span class="nb">`
+(`white-space: nowrap`) in every heading, label and the hero's "you say" line, so "Wind-up" and "Stop-motion" stay
+whole from 360 to 1440 px. Film lengths are the released file's real duration (`ffprobe`, whole seconds, title and
+end cards included), the number a viewer actually gets; the "Film length" table is the same thing for a request.
+
 ## Space, radius, elevation
 
 - Spacing scale `--s-1 … --s-9`: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96. Section rhythm on the gallery is
@@ -145,8 +151,9 @@ Transitions are `var(--step)` = `.12s steps(2, end)`.
 - **Viewer** `.viewer`: the review page's screen plus its control deck fused in one radius-16 block.
 - **Code block** `.code`: deck fill, radius 10, a header row (uppercase mono "who it is for" on the left, a quiet
   `.btn.sm.copy` on the right) above a `pre.cmd` that scrolls sideways. The button never overlaps the command.
-- **Tables** `.lens`: hairline rows, mono digits, the default row on accent-soft. **X-sheet** `.xsheet`: the six
-  steps as an exposure sheet, numbered `01…06` in accent ink, ruled with lines.
+- **Tables** `.lens`: hairline rows, mono digits, the default row on accent-soft; cells never wrap (the wrapper
+  scrolls sideways if it must), heads may. **X-sheet** `.xsheet`: the six steps as an exposure sheet, numbered
+  `01…06` in accent ink, ruled with lines.
 
 ## Motion
 
@@ -162,7 +169,9 @@ Transitions are `var(--step)` = `.12s steps(2, end)`.
 - Gallery: one column, `max-width 1180px`, gutter `clamp(16px, 4vw, 40px)`. Film blocks alternate 1.25fr / 1fr.
   Breakpoints: 960 (process 4 → 2, review 2 → 1), 860 (nav hides, films and install stack, steps 3 → 1,
   in-progress 4 → 2), 760 (cast 8 → 4, footer cards 3 → 1), 600 (licence stacks), 520 (GitHub label hides, hero tape
-  shrinks), 480 (fit lists and process 1 column).
+  shrinks), 480 (fit lists and process 1 column; cast labels 14 px in a 66 px box so two-word names take two lines
+  and "Needle-felt" still fits a cell). The film kicker (`.meta .kind`) never shrinks; the accent rule beside it
+  keeps at least 24 px.
 - Review page: `max-width 1840px`; stage `1fr` + desk `clamp(340px, 27vw, 440px)`, gap 28; the desk scrolls on its
   own at ≥ 1000. Breakpoints: 1000 (one column), 760 (bar wraps, title first, keys hidden, strip 48 px), 480 (pills
   share a row, buttons fill the row, timecode 15 px).

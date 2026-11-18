@@ -165,6 +165,19 @@ def add_images(paths, fid, title='', root='.', known=(), lang=None):
     return build(root)
 
 
+def _web_copy(root, src, rel):
+    """VP9/Opus copy of the film next to it -> relative path, or '' (some built-in browsers, e.g. the Codex app's, play no H.264: sound but a black picture)"""
+    if src.lower().endswith('.webm') or not shutil.which('ffmpeg'): return ''
+    out = os.path.splitext(rel)[0] + '.webm'
+    r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-c:v', 'libvpx-vp9', '-deadline', 'realtime', '-cpu-used', '8',
+                        '-row-mt', '1', '-b:v', '0', '-crf', '30', '-pix_fmt', 'yuv420p', '-c:a', 'libopus', '-b:a', '128k', _p(root, out)],
+                       capture_output=True, text=True)
+    if r.returncode:
+        print('review: no WebM copy (ffmpeg without libvpx-vp9 / libopus?); browsers without H.264 will show a black picture', file=sys.stderr)
+        return ''
+    return out
+
+
 def add(video, fid, title='', root='.', known=(), lang=None):
     """Register a film version (copies the video and shot list) and rebuild the page -> page path"""
     title = (title or '').strip() or os.path.splitext(os.path.basename(video))[0]
@@ -192,6 +205,8 @@ def add(video, fid, title='', root='.', known=(), lang=None):
     film = dict(id=fid, title=title, src=rel, name=os.path.basename(src), shots=shots, dur=dur,
                 fps=s.get('fps') or fps or 24, known=list(known), at=datetime.now().strftime('%m-%d %H:%M'),
                 thumbs=_thumbs(root, src, shots, fid))
+    web = _web_copy(root, src, rel)
+    if web: film['web'] = web
     old = d.get('film')
     hist = [h for h in d['history'] if h.get('id') not in (fid, (old or {}).get('id'))]
     if old and old.get('id') != fid: hist.insert(0, old)
@@ -893,7 +908,7 @@ function render(){
   const known = (F.known || []).filter(k => k.trim());
   $('#main').innerHTML = `
     <div class="room"><section class="stage"><div class="stage-in">
-        <div class="viewer"><div class="screen" id="screen"><video id="v" src="${esc(F.src)}" preload="auto" playsinline></video>
+        <div class="viewer"><div class="screen" id="screen"><video id="v" preload="auto" playsinline>${F.web ? `<source src="${esc(F.web)}" type="video/webm">` : ''}<source src="${esc(F.src)}"></video>
           <button class="big" id="big" aria-label="${T.play}">${IC.play}</button></div>
         <div class="ctrl">
           <button class="ib main" id="pp" aria-label="${T.playPause}">${IC.play}</button>
