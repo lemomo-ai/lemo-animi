@@ -154,6 +154,16 @@ if [ "$MODE" = "image" ]; then
   warn "image tool works but returned no transparent background: assets will need cut-out (sh setup.sh model, ~0.97 GB) and edges get worse"
   exit 1
 fi
+LOCK="$HOME_DIR/.setup.lock"                       # two agents installing at once would fight over the same files
+if [ "$MODE" != "check" ]; then
+  mkdir -p "$HOME_DIR"; n=0
+  while ! mkdir "$LOCK" 2>/dev/null; do
+    [ "$n" -eq 0 ] && say "another setup.sh is installing into $HOME_DIR; waiting for it to finish ..."
+    n=$((n + 1)); [ "$n" -gt 1800 ] && { warn "still locked after an hour: if no setup.sh is running, remove $LOCK and rerun"; exit 1; }
+    sleep 2
+  done
+  trap 'rmdir "$LOCK" 2>/dev/null || true' EXIT INT TERM
+fi
 if [ "$MODE" = "instruments" ]; then get_instruments; [ "$INSTR_OK" -eq 1 ] || exit 1; exit 0; fi
 check_ffmpeg
 if [ "$MODE" = "check" ]; then

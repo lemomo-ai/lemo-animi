@@ -10,7 +10,7 @@ PY=$(sh "$S/setup.sh" python)   # the Python to use once the env exists
 sh "$S/setup.sh"                # Python env (~300 MB of packages) + score instrument samples (~1.4 GB, resumable); no matting model
 ```
 
-ffmpeg is required. Before any download, tell the user what and how big. Offline, `setup.sh` still builds the venv and prints the Python, then exits 1 because the instrument samples are missing: the env is usable for everything but the score; fetch the samples later with `sh "$S/setup.sh" instruments`.
+ffmpeg is required. Run `check` before the opening questions; anything missing goes into those questions (what, how big, where it goes) and is downloaded only after the user agrees. Install only into `~/lemo-animi-env` (or the user's own `LEMO_ANIMI_HOME`); in a sandbox ask for permission to write there instead of redirecting to a temp folder. Two installs at once are safe: `setup.sh` waits for the other one to finish. Offline, `setup.sh` still builds the venv and prints the Python, then exits 1 because the instrument samples are missing: the env is usable for everything but the score; fetch the samples later with `sh "$S/setup.sh" instruments`.
 Narration uses edge-tts and needs the network: if `sound.py vo` can't connect it stops and prints a justification; request access. If refused, drop `vo` from `sound.json`, make the film without narration and say so in the report. Never substitute a local offline voice.
 
 ## 1. Film folder

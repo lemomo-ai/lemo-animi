@@ -11,7 +11,7 @@ description: Make a short stop-motion animated film from one line ("story + styl
 
 ## 1. Talking to the user
 
-**Language.** The skill is in English; talk to the user in their language (questions, options, progress notes, report). If they wrote nothing to infer it from, the first question asks it ("语言 Language": 中文 / English). That is also the film's language unless they ask otherwise: `sound.json` `"lang": "zh" | "en"` sets narration, subtitles and card text (`references/sound.md`); `review.py add … --lang` sets the page; `animi.py styles --lang` lists styles.
+**Language.** The skill is in English; talk to the user in their language (questions, options, every progress note between tool calls, report). If they wrote nothing to infer it from, the first question asks it ("语言 Language": 中文 / English). That is also the film's language unless they ask otherwise: `sound.json` `"lang": "zh" | "en"` sets narration, subtitles and card text (`references/sound.md`); `review.py add … --lang` sets the page; `animi.py styles --lang` lists styles.
 
 | Item | Default and handling |
 |---|---|
@@ -50,7 +50,7 @@ Commands and folders: `references/workflow.md` (also the tools list and the revi
 
 | Step | What | Read |
 |---|---|---|
-| 0 | `$S` = absolute path of the `scripts/` folder next to this file (quote it: `"$S/…"`); `$PY` = output of `sh "$S/setup.sh" python`, for every Python command. `sh "$S/setup.sh" check`; if something is missing, `sh "$S/setup.sh"` (about 1.7 GB, network, writes `~/lemo-animi-env`: tell the user the size first; in a sandbox request escalated permission for it) | workflow §0 |
+| 0 | `$S` = absolute path of the `scripts/` folder next to this file (quote it: `"$S/…"`); `$PY` = output of `sh "$S/setup.sh" python`, for every Python command. `sh "$S/setup.sh" check`; if something is missing, `sh "$S/setup.sh"` (about 1.7 GB, network, writes `~/lemo-animi-env`). Run `check` before the opening questions; if anything is missing, the download (what, size, where) is one more item in those questions, and nothing is downloaded before the answer. In a sandbox, request escalated permission to write `~/lemo-animi-env`; never point `LEMO_ANIMI_*` at a temp folder to get around it (every later film would download it again) | workflow §0 |
 | 1 | Style package: `STYLE.md`, `style.json`, `ref/` and `poster.jpg` where present | |
 | 2 | **Director's plan** in `production-log.md`: logline, story skeleton with seconds per part, beat sheet, narration, shot list, layered action table, image list | directing |
 | 3 | **Timing**: with narration, write it in `sound.json`, `sound.py vo` gives line lengths, shots follow; without, seconds per beat (a beat is 2–4 s and holds several events) | sound |
