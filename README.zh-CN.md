@@ -171,8 +171,9 @@ mkdir -p ~/.claude/skills && ln -s ~/lemo-animi/plugin/skills/lemo-animi ~/.clau
 
 [CC BY-NC 4.0](LICENSE)。简单说：
 
-- **非商用免费。** 可以分享、改编，署名 **lemo-animi by Lemomo (LemoLab)**。
+- **非商用免费。** 可以分享、改编，署名 **lemo-animi by Lemomo (LemoLab)**。用它做的影片署名就够，不用附链接。
 - **商用需要商用授权**，用 lemo-animi 做的影片拿去商用也一样：广告、接单、带变现的频道、产品。请写信到 [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com)。
+- **自媒体创作者变现免费。** 个人创作者过去12个月的自媒体收入不超过5万元人民币（收入主要不是人民币的按7,000美元），可以在自己的账号上用 lemo-animi 做的影片变现，记得署名。给客户接单不在内。详见 [LICENSE](LICENSE) 里的「Additional Permission for Individual Creators」。
 - **第三方素材保留各自的许可证**：思源黑体（SIL OFL 1.1，在 `plugin/skills/lemo-animi/fonts/`）和安装时下载的乐器采样库。旁白用微软 Edge 在线语音，遵守微软的条款。
 
 ## 更多

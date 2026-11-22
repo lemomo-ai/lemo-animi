@@ -175,8 +175,9 @@ Narration uses Microsoft Edge online voices, so the narration text is sent to Mi
 
 [CC BY-NC 4.0](LICENSE). In short:
 
-- **Non-commercial use is free.** Share and adapt it, with credit to **lemo-animi by Lemomo (LemoLab)**.
+- **Non-commercial use is free.** Share and adapt it, with credit to **lemo-animi by Lemomo (LemoLab)**. For films, the credit is enough, no link needed.
 - **Commercial use needs a commercial licence**, and so does using films made with lemo-animi commercially: advertising, client work, monetised channels, products. Email [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com).
+- **Social media creators can monetise for free.** If you are an individual and your creator income over the last 12 months is no more than CNY 50,000 (USD 7,000 if most of it is in other currencies), you can earn from lemo-animi films on your own accounts, with credit. Client work is not included. Details: the Additional Permission for Individual Creators in [LICENSE](LICENSE).
 - **Third-party material keeps its own licence**: Source Han Sans (SIL OFL 1.1, in `plugin/skills/lemo-animi/fonts/`) and the instrument sample libraries that setup downloads. Narration uses Microsoft Edge online voices, under Microsoft's terms.
 
 ## More
