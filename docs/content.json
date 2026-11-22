@@ -176,11 +176,15 @@
    "licence_pts": [
     [
      "Free for non-commercial use",
-     "Share and adapt it, with credit to lemo-animi by Lemomo (LemoLab)."
+     "Share and adapt it, with credit to lemo-animi by Lemomo (LemoLab). For films, the credit is enough, no link needed."
     ],
     [
      "Commercial use needs a licence",
      "So does using films made with lemo-animi commercially: advertising, client work, monetised channels, products."
+    ],
+    [
+     "Free for social media creators",
+     "If you are an individual and your creator income over the last 12 months is no more than CNY 50,000 (USD 7,000 if most of it is in other currencies), you can earn from lemo-animi films on your own accounts, with credit. Client work is not included."
     ],
     [
      "Third-party material",
@@ -364,11 +368,15 @@
    "licence_pts": [
     [
      "非商用免费",
-     "可以分享、改编，署名 lemo-animi by Lemomo (LemoLab)。"
+     "可以分享、改编，署名 lemo-animi by Lemomo (LemoLab)。用它做的影片署名就够，不用附链接。"
     ],
     [
      "商用需要授权",
      "用 lemo-animi 做的影片拿去商用也一样：广告、接单、带变现的频道、产品。"
+    ],
+    [
+     "自媒体创作者变现免费",
+     "个人创作者过去12个月的自媒体收入不超过5万元人民币（收入主要不是人民币的按7,000美元），可以在自己的账号上用 lemo-animi 做的影片变现，记得署名。给客户接单不在内。"
     ],
     [
      "第三方素材",
