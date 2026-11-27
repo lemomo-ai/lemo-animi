@@ -6,7 +6,7 @@
 
 **一句话，用 Codex 做一支定格动画短片。** Claude Code 配一个生图模型也能做。
 
-[**打开画廊**](https://lemomo-ai.github.io/lemo-animi/zh/) · [风格和样片](#八种风格八支样片) · [安装](#安装) · [SKILL.md](plugin/skills/lemo-animi/SKILL.md) · [English](README.md)
+[**打开画廊**](https://lemomo-ai.github.io/lemo-animi/zh/) · [风格和样片](#八种风格八支样片) · [安装](#安装) · [SKILL.md](plugin/skills/lemo-animi/SKILL.md) · [English](README.md) · [日本語](README.ja.md)
 
 ⭐ 喜欢的话，在 GitHub 上点个 Star，让更多人看到。
 
