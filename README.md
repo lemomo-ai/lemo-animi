@@ -8,7 +8,7 @@
 
 **一句话，用 Codex 做一支定格动画短片。** Claude Code 配一个生图模型也能做。
 
-[**Open the gallery**](https://lemomo-ai.github.io/lemo-animi/) · [Styles and films](#eight-styles-eight-sample-films) · [Install](#install) · [SKILL.md](plugin/skills/lemo-animi/SKILL.md) · [简体中文](README.zh-CN.md)
+[**Open the gallery**](https://lemomo-ai.github.io/lemo-animi/) · [Styles and films](#eight-styles-eight-sample-films) · [Install](#install) · [SKILL.md](plugin/skills/lemo-animi/SKILL.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
 
 ⭐ If you like lemo-animi, a star on GitHub helps others find it.
 
